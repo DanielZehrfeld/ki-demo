@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiDemo", "KiDemo\KiDemo.csproj", "{0323CEA9-C722-474F-8289-C67E25E002F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0323CEA9-C722-474F-8289-C67E25E002F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0323CEA9-C722-474F-8289-C67E25E002F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0323CEA9-C722-474F-8289-C67E25E002F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0323CEA9-C722-474F-8289-C67E25E002F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A58C76A0-8D86-449A-978C-BA301810C639}
+	EndGlobalSection
+EndGlobal
