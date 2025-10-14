@@ -1,4 +1,4 @@
-﻿using KiChat.Client.SignalR;
+﻿//using KiChat.Client.SignalR;
 using System;
 using System.Text;
 
