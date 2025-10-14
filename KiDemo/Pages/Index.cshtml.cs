@@ -1,3 +1,4 @@
+using KiDemo.Backend;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -18,8 +19,7 @@ namespace KiDemo.Pages
 
         public void OnPost()
         {
-            // Process the input text and set the output text
-            OutputText = $"Processed: {InputText}";
+            OutputText = BackendService.ProcessUserInput(InputText);
         }
     }
 }
