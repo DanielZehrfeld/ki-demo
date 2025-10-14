@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace KiChat.Client.SignalR;
 
-internal class SignalRClient 
+internal class SignalRClient: IDisposable 
 {
     private const string Failed = "FAILED";
 
@@ -17,6 +17,8 @@ internal class SignalRClient
     public IObservable<string> RootResults => _rootResults.Synchronize();
  
     private HubConnection? _connection;
+
+    public bool IsError { get; private set; } = false;
 
     public IDisposable Run(string url, Action<string> log)
         => Observable.Return(Unit.Default)
@@ -30,11 +32,14 @@ internal class SignalRClient
             .Catch<HubConnection, Exception>(_ =>
             {
                 _connection = default;
+                IsError = true;
+                
+                log("Setting client IsError TRUE");
 
-                return Observable.Empty<HubConnection>()
+				return Observable.Empty<HubConnection>()
                     .Delay(ReconnectDelay);
             })
-            .Repeat()
+            //.Repeat()
             .Subscribe(
                 onNext: _ => { },
                 onError: _ =>
@@ -122,4 +127,8 @@ internal class SignalRClient
             _connection?.SendAsync(SignalRConstants.CommandRelease, count).Wait();
     }
 
+    public void Dispose()
+    {
+	    _connection?.DisposeAsync();
+    }
 }

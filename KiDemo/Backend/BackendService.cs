@@ -17,9 +17,12 @@ public static class BackendService
     {
 		try
 		{
-		    if (_client == null)
+		    if (_client == null || _client?.IsError == true)
 		    {
-		        sb.AppendLine("Client NULL, creating client");
+				_client?.Dispose();
+				_client = null;
+
+				sb.AppendLine("Client NULL, creating client");
 		
 				var client = new SignalRClient();
 		
