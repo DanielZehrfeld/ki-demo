@@ -30,7 +30,7 @@ public static class BackendService
 		        client.RootResults.Subscribe(rr => sb.AppendLine($"{DateTimeOffset.Now:O} - RR: " + rr));
 		        //10.0.0.5
 		        //client.Run("http://localhost:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
-		        client.Run("http://10.0.0.5:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
+		        client.Run("http://ki-chat-service:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
 		
 				_client = client;
 		    }
