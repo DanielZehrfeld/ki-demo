@@ -40,7 +40,7 @@ public static class BackendService
 		
 		    sb.AppendLine("releasing 1");
 		
-			_client.CommandRelease(1);
+			_client?.CommandRelease(1);
 		
 			sb.AppendLine("releasing DONE, sleeping");
 		

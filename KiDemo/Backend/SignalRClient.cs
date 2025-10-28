@@ -71,13 +71,7 @@ internal class SignalRClient: IDisposable
     }
     private void OnRootResult(string message)
     {
-        try
-        {
-            _rootResults.OnNext(message);
-        }
-        catch (Exception ex)
-        {
-        }
+	    _rootResults.OnNext(message);
     }
 
     private static IObservable<HubConnection> Connect(HubConnection connection, Action<string> log)

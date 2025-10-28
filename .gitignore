@@ -1,3 +1,5 @@
 .vs/
 KiDemo/obj/
 KiDemo/bin/
+KiDemo.Client/obj/
+KiDemo.Client/bin/
