@@ -26,12 +26,14 @@ public static class BackendService
 		
 				var client = new SignalRClient();
 		
-		
 		        client.RootResults.Subscribe(rr => sb.AppendLine($"{DateTimeOffset.Now:O} - RR: " + rr));
-		        //10.0.0.5
-		        //client.Run("http://localhost:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
-		        client.Run("http://ki-chat-service.internal.local:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
-		
+				
+				// AZ
+		        // client.Run("http://10.0.0.4:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
+				
+				//local
+		        client.Run("http://localhost:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
+
 				_client = client;
 		    }
 		
