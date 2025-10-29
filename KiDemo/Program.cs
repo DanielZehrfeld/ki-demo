@@ -1,11 +1,16 @@
+using KiDemo.Backend;
 using KiDemo.Components;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
+builder.Services
+    .AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services
+    .AddSingleton<IBackendService, BackendService>();
+
 
 var app = builder.Build();
 

@@ -1,63 +1,31 @@
 ﻿using KiChat.Client.SignalR;
 using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 
 namespace KiDemo.Backend;
 
-public static class BackendService
+
+public interface IBackendService
 {
+    IObservable<string> Messages { get; }
+    void AddMessage(string message);
+}
 
-	private static StringBuilder sb = new StringBuilder();
+
+
+public class BackendService: IBackendService
+{
 	
-	private static SignalRClient? _client;
+	private readonly Subject<string> _messages = new Subject<string>();
 
+	public IObservable<string> Messages => _messages;
 
-
-	public static string ProcessUserInput(string input)
+    public void AddMessage(string message)
     {
-		try
-		{
-		    if (_client == null || _client?.IsError == true)
-		    {
-				_client?.Dispose();
-				_client = null;
+	    _messages.OnNext(message);
 
-				sb.AppendLine("Client NULL, creating client");
-		
-				var client = new SignalRClient();
-		
-		        client.RootResults.Subscribe(rr => sb.AppendLine($"{DateTimeOffset.Now:O} - RR: " + rr));
-				
-				// AZ
-		        // client.Run("http://10.0.0.4:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
-				
-				//local
-		        client.Run("http://localhost:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
-
-				_client = client;
-		    }
-		
-		
-		    sb.AppendLine("releasing 1");
-		
-			_client?.CommandRelease(1);
-		
-			sb.AppendLine("releasing DONE, sleeping");
-		
-			Thread.Sleep(2000);
-		
-			sb.AppendLine("sleeping DONE");
-		}
-		catch (Exception ex)
-		{
-		    sb.AppendLine($"{DateTimeOffset.Now:O} - ERROR: {ex}");
-		}
-
-		return $"processed: {sb}";
-		
-		//return $"processed x: {input}";
-    }
-
-
+	}
 
 }
