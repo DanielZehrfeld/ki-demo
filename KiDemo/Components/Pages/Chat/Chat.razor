@@ -6,10 +6,10 @@
 <PageTitle>Chat</PageTitle>
 
 <div class="chat-container">
-	<div class="item-list">
+	<div class="message-list">
 		@foreach (var message in _messages)
 		{
-			<button class="list-item" @onclick="() => SelectMessage(message.Id)">@message.DisplayName</button>
+			<button class="message-item" @onclick="() => SelectMessage(message.Id)">@message.DisplayName</button>
 		}
 	</div>
 

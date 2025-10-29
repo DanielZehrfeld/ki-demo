@@ -2,21 +2,25 @@
 
     display: flex;
     flex-direction: row;
-    height: 100%; /* Take up full height of the parent container */
+    height: 100%;
     
     background-color: aqua
 }
 
-.item-list {
-    background-color: #f8f9fa;
-    border-right: 1px solid #ddd;
+.message-list {
+    background-color: gray;
     padding: 10px;
     overflow-y: auto;
+    overflow: auto;
     width: 200px;
-    overflow-y: auto; /* Enable scrolling for the item list */
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    position: relative;
 }
 
-.list-item {
+.message-item {
     display: block;
     width: 100%;
     margin-bottom: 5px;
@@ -28,15 +32,17 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    
+    margin-left: 10px;
 
-    background-color: beige
+    background-color:blueviolet;
 }
 
 .input-area {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
-    position: relative; /* Ensures child elements with `absolute` positioning align relative to this container */
+    position: relative;
     flex-shrink: 0; /* Fixed height for input area */
 }
 
@@ -44,18 +50,16 @@
 .content-area {
     display: flex;
     gap: 10px;
-    margin-bottom: 10px;
-    position: relative; /* Ensures child elements with `absolute` positioning align relative to this container */
+    margin-bottom: 20px;
+    position: relative;
 
-
-
-    flex: 1; /* Take up remaining space */
-    overflow: auto; /* Enable scrolling for the content area */
+    flex: 1;
+    overflow: auto;
 }
 
 .status-info {
     position: absolute; /* Aligns relative to the nearest positioned parent */
-    right: 10px; /* Locks it to the right side of the parent container */
+    right: 0px; /* Locks it to the right side of the parent container */
     top: 50%; /* Vertically aligns it with the middle of the parent container */
     transform: translateY(-50%); /* Adjusts for proper vertical centering */
     display: flex;
@@ -69,7 +73,7 @@
 }
 
 .processing-lamp {
-    width: 15px; /* Adjust size as needed */
+    width: 15px;
     height: 15px;
     border-radius: 50%; /* Makes it a circle */
     display: inline-block;
@@ -77,6 +81,6 @@
 
 textarea {
     width: 100%;
-    height: 100%; /* Fill the available height */
+    height: 100%;
     resize: none; /* Disable manual resizing */
 }
