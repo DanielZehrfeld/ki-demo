@@ -13,7 +13,7 @@
     overflow-y: auto;
     overflow: auto;
     width: 200px;
-    gap: 10px;
+    gap: 5px;
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
