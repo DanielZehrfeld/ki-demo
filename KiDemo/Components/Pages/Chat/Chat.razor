@@ -1,4 +1,5 @@
 ﻿@page "/chat"
+@using System.Drawing
 @using KiDemo.Backend
 @rendermode InteractiveServer
 
@@ -13,9 +14,17 @@
 	</div>
 
 	<div class="main-area">
+		
+
 		<div class="input-area">
-			<input type="text" @bind="_messageTextToSubmit" placeholder="Enter text..." />
-			<button class="btn btn-primary" @onclick="AddItem">Submit</button>
+			<input type="text" @bind="_messageTextToSubmit" placeholder="Enter text..."/>
+			<button class="btn btn-primary" @onclick="AddItem" disabled="@_isSubmitBtnDisabled">Submit</button>
+
+			<div class="status-info">
+				<span class="processing-lamp" style="background-color: @(_isProcessing ? "green" : "blueviolet");"></span>
+				<span>Total token count: @_totalTokenCount</span>
+			</div>
+
 		</div>
 
 		<div class="content-area">
@@ -32,6 +41,12 @@
 
 	private string _messageTextToSubmit = string.Empty;
 	private string _selectedMessageContent = string.Empty;
+
+
+	private bool _isSubmitBtnDisabled = false;
+	private bool _isProcessing = false;
+	private int _totalTokenCount = 0;
+
 
 	protected override void OnInitialized()
 	{
@@ -55,8 +70,10 @@
 
 	private void OnServiceState(ServiceStateVm serviceState)
 	{
+		_isSubmitBtnDisabled = !serviceState.IsSubmitEnabled;
+		_totalTokenCount = serviceState.TokenCount;
 
-
+		_isProcessing = serviceState.TokenCount % 2 == 0;
 	}
 
 	private void AddItem()

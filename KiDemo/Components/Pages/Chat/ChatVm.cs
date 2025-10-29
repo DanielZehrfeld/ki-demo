@@ -21,6 +21,8 @@ public class ChatVm(IBackendService backendService)
 
 	private List<(string, Guid)> _messages = new List<(string, Guid)>();
 
+	private int _tokenCount = 0;
+
 	public void SubmitMessage(string message)
 	{
 
@@ -31,6 +33,12 @@ public class ChatVm(IBackendService backendService)
 			.ToArray();
 
 		_messageItems.OnNext(messageItemVms);
+
+
+		_tokenCount += 3;
+
+		_serviceState.OnNext(new ServiceStateVm(_tokenCount < 20, _tokenCount));
+
 
 		TriggerStateChanged();
 	}
