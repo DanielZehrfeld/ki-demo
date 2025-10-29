@@ -1,8 +1,8 @@
 ﻿.chat-container {
-    display: grid;
-    grid-template-columns: 200px 1fr; /* Fixed width for the right side */
-    grid-template-rows: 1fr; /* Full height */
-    height: 100vh; /* Full viewport height */
+
+    display: flex;
+    flex-direction: row;
+    height: 100%; /* Take up full height of the parent container */
 }
 
 .item-list {
@@ -10,6 +10,8 @@
     border-right: 1px solid #ddd;
     padding: 10px;
     overflow-y: auto;
+    width: 200px;
+    overflow-y: auto; /* Enable scrolling for the item list */
 }
 
 .list-item {
@@ -20,25 +22,31 @@
 }
 
 .main-area {
-    display: grid;
-    grid-template-rows: auto 1fr; /* Fixed height for input area, rest for content */
-    padding: 10px;
+    flex: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column;
 }
 
 .input-area {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
-
     position: relative; /* Ensures child elements with `absolute` positioning align relative to this container */
+    flex-shrink: 0; /* Fixed height for input area */
 }
+
 
 .content-area {
     display: flex;
-    flex-direction: column;
-    height: 100%;
-}
+    gap: 10px;
+    margin-bottom: 10px;
+    position: relative; /* Ensures child elements with `absolute` positioning align relative to this container */
 
+
+
+    flex: 1; /* Take up remaining space */
+    overflow: auto; /* Enable scrolling for the content area */
+}
 
 .status-info {
     position: absolute; /* Aligns relative to the nearest positioned parent */
@@ -55,7 +63,6 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
 }
 
-
 .processing-lamp {
     width: 15px; /* Adjust size as needed */
     height: 15px;
@@ -63,10 +70,8 @@
     display: inline-block;
 }
 
-
-
 textarea {
     width: 100%;
-    height: 100%;
-    resize: none;
+    height: 100%; /* Fill the available height */
+    resize: none; /* Disable manual resizing */
 }
