@@ -1,5 +1,6 @@
 using KiDemo.Backend;
 using KiDemo.Components;
+using KiDemo.Components.Pages.Chat;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,9 @@ builder.Services
 
 builder.Services
     .AddSingleton<IBackendService, BackendService>();
+
+builder.Services
+	.AddScoped<ChatVm>();
 
 
 var app = builder.Build();

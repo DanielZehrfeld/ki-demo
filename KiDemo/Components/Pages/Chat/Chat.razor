@@ -28,7 +28,7 @@
 	</div>
 </div>
 
-@inject IBackendService BackendService
+@inject ChatVm ChatViewModel
 
 @code {
 	private List<string> items = new List<string>();
@@ -38,7 +38,7 @@
 	protected override void OnInitialized()
 	{
 
-		BackendService.Messages.Subscribe(message =>
+		ChatViewModel.Messages.Subscribe(message =>
 		{
 			items.Add(message);
 			
@@ -51,8 +51,7 @@
 	{
 		if (!string.IsNullOrWhiteSpace(newItem))
 		{
-			// Pass user input to the BackendService
-			BackendService.AddMessage(newItem);
+			ChatViewModel.AddMessage(newItem);
 			newItem = string.Empty;
 		}
 	}
