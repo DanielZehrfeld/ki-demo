@@ -1,23 +1,21 @@
 ﻿.chat-container {
-
     display: flex;
     flex-direction: row;
     height: 100%;
-    
     background-color: aqua
 }
 
 .message-list {
     background-color: gray;
-    padding: 10px;
-    overflow-y: auto;
-    overflow: auto;
+    padding: 20px;
+    overflow-y: scroll;
     width: 200px;
     gap: 5px;
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
     position: relative;
+    height: calc(100vh - 95px);
 }
 
 .message-item {
@@ -32,9 +30,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    
     margin-left: 10px;
-
     background-color:blueviolet;
 }
 
@@ -46,16 +42,28 @@
     flex-shrink: 0; /* Fixed height for input area */
 }
 
-
 .content-area {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
     position: relative;
-
     flex: 1;
     overflow: auto;
 }
+
+    .content-area textarea {
+        flex: 1; /* Default text area takes up remaining space */
+        resize: none; /* Disable manual resizing */
+    }
+
+    .content-area .metadata-area {
+        flex: 0; /* Prevent it from expanding */
+        width: 200px; /* Fixed width for metadata text area */
+        height: 100%; /* Full height */
+        resize: none; /* Disable manual resizing */
+
+        background-color: lightblue;
+    }
 
 .status-info {
     position: absolute; /* Aligns relative to the nearest positioned parent */

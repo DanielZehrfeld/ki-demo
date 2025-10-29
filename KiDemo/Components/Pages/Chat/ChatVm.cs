@@ -27,6 +27,17 @@ public class ChatVm(IBackendService backendService)
 	{
 
 		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+		_messages.Add((message, Guid.NewGuid()));
+
+
+
 
 		var messageItemVms = _messages
 			.Select(m => new MessageItemVm(m.Item2, $"Display: {m.Item1}"))
@@ -47,7 +58,7 @@ public class ChatVm(IBackendService backendService)
 
 	public void SelectMessage(Guid messageId)
 	{
-		_messageDetails.OnNext(new MessageDetailsVm(messageId, $"CONTENT of {messageId}"));
+		_messageDetails.OnNext(new MessageDetailsVm(messageId, $"CONTENT of {messageId}", $"metadata of {messageId}"));
 
 		TriggerStateChanged();
 	}

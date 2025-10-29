@@ -29,6 +29,7 @@
 
 		<div class="content-area">
 			<textarea readonly>@_selectedMessageContent</textarea>
+			<textarea class="metadata-area" readonly>@_selectedMessageMetadata</textarea>
 		</div>
 	</div>
 </div>
@@ -41,7 +42,7 @@
 
 	private string _messageTextToSubmit = string.Empty;
 	private string _selectedMessageContent = string.Empty;
-
+	private string _selectedMessageMetadata = string.Empty;
 
 	private bool _isSubmitBtnDisabled = false;
 	private bool _isProcessing = false;
@@ -66,6 +67,7 @@
 	private void OnMessageDetails(MessageDetailsVm messageDetails)
 	{
 		_selectedMessageContent = messageDetails.MessageContent;
+		_selectedMessageMetadata = messageDetails.MessageMetadata;
 	}
 
 	private void OnServiceState(ServiceStateVm serviceState)
