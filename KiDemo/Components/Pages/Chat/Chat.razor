@@ -5,59 +5,71 @@
 <PageTitle>Chat</PageTitle>
 
 <div class="chat-container">
-	<!-- Right side: List of clickable items -->
 	<div class="item-list">
-		@foreach (var item in items)
+		@foreach (var message in _messages)
 		{
-			<button class="list-item" @onclick="() => SelectItem(item)">@item</button>
+			<button class="list-item" @onclick="() => SelectMessage(message.Id)">@message.DisplayName</button>
 		}
 	</div>
 
-	<!-- Main area -->
 	<div class="main-area">
-		<!-- Top: Input field and submit button -->
 		<div class="input-area">
-			<input type="text" @bind="newItem" placeholder="Enter text..." />
+			<input type="text" @bind="_messageTextToSubmit" placeholder="Enter text..." />
 			<button class="btn btn-primary" @onclick="AddItem">Submit</button>
 		</div>
 
-		<!-- Center/Bottom: Text area -->
 		<div class="content-area">
-			<textarea readonly>@selectedItemContent</textarea>
+			<textarea readonly>@_selectedMessageContent</textarea>
 		</div>
 	</div>
 </div>
 
-@inject ChatVm ChatViewModel
+@inject ChatVm ViewModel
 
 @code {
-	private List<string> items = new List<string>();
-	private string newItem = string.Empty;
-	private string selectedItemContent = string.Empty;
+	private List<MessageItemVm> _messages = new List<MessageItemVm>();
+
+
+	private string _messageTextToSubmit = string.Empty;
+	private string _selectedMessageContent = string.Empty;
 
 	protected override void OnInitialized()
 	{
 
-		ChatViewModel.Messages.Subscribe(message =>
-		{
-			items.Add(message);
-			
-			
-			InvokeAsync(() => StateHasChanged()); 
-		});
+		ViewModel.MessageItems.Subscribe(OnMessagesChanged);
+		ViewModel.MessageDetails.Subscribe(OnMessageDetails);
+		ViewModel.ServiceState.Subscribe(OnServiceState);
+
+		ViewModel.StateHasChanged.Subscribe(_ => InvokeAsync(StateHasChanged));
+	}
+
+	private void OnMessagesChanged(MessageItemVm[] messages)
+	{
+		_messages = messages.ToList();
+	}
+
+	private void OnMessageDetails(MessageDetailsVm messageDetails)
+	{
+		_selectedMessageContent = messageDetails.MessageContent;
+	}
+
+	private void OnServiceState(ServiceStateVm serviceState)
+	{
+
+
 	}
 
 	private void AddItem()
 	{
-		if (!string.IsNullOrWhiteSpace(newItem))
+		if (!string.IsNullOrWhiteSpace(_messageTextToSubmit))
 		{
-			ChatViewModel.AddMessage(newItem);
-			newItem = string.Empty;
+			ViewModel.SubmitMessage(_messageTextToSubmit);
+			_messageTextToSubmit = string.Empty;
 		}
 	}
 
-	private void SelectItem(string item)
+	private void SelectMessage(Guid messageId)
 	{
-		selectedItemContent = $"Content of {item}";
+		ViewModel.SelectMessage(messageId);
 	}
 }
