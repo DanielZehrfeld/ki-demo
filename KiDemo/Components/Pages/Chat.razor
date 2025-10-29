@@ -1,0 +1,48 @@
+﻿@page "/chat"
+@rendermode InteractiveServer
+
+<PageTitle>Chat</PageTitle>
+
+<div class="chat-container">
+	<!-- Right side: List of clickable items -->
+	<div class="item-list">
+		@foreach (var item in items)
+		{
+			<button class="list-item" @onclick="() => SelectItem(item)">@item</button>
+		}
+	</div>
+
+	<!-- Main area -->
+	<div class="main-area">
+		<!-- Top: Input field and submit button -->
+		<div class="input-area">
+			<input type="text" @bind="newItem" placeholder="Enter text..." />
+			<button class="btn btn-primary" @onclick="AddItem">Submit</button>
+		</div>
+
+		<!-- Center/Bottom: Text area -->
+		<div class="content-area">
+			<textarea readonly>@selectedItemContent</textarea>
+		</div>
+	</div>
+</div>
+
+@code {
+	private List<string> items = new List<string>();
+	private string newItem = string.Empty;
+	private string selectedItemContent = string.Empty;
+
+	private void AddItem()
+	{
+		if (!string.IsNullOrWhiteSpace(newItem))
+		{
+			items.Add(newItem);
+			newItem = string.Empty;
+		}
+	}
+
+	private void SelectItem(string item)
+	{
+		selectedItemContent = $"Content of {item}";
+	}
+}

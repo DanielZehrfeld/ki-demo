@@ -1,0 +1,44 @@
+﻿.chat-container {
+    display: grid;
+    grid-template-columns: 200px 1fr; /* Fixed width for the right side */
+    grid-template-rows: 1fr; /* Full height */
+    height: 100vh; /* Full viewport height */
+}
+
+.item-list {
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.list-item {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.main-area {
+    display: grid;
+    grid-template-rows: auto 1fr; /* Fixed height for input area, rest for content */
+    padding: 10px;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.content-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+}
