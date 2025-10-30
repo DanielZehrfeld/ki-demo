@@ -83,9 +83,9 @@
 	private void OnServiceState(ServiceStateVm serviceState)
 	{
 		_isSubmitBtnDisabled = !serviceState.IsSubmitEnabled;
-		_totalTokenCount = serviceState.TokenCount;
+		_totalTokenCount = serviceState.TotalTokenCount;
 
-		_isProcessing = serviceState.TokenCount % 2 == 0;
+		_isProcessing = serviceState.TotalTokenCount % 2 == 0;
 	}
 
 	private void AddItem()

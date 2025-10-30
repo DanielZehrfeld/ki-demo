@@ -1,70 +1,177 @@
-﻿using System;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Text;
+﻿using KiDemo.Backend.Dto;
+using KiDemo.Backend.Message;
+using KiDemo.Backend.State;
+using KiDemo.Backend.Utils;
 using KiDemo.Configuration;
 using KiDemo.SignalR;
+using KiDemo.SignalR.Messages;
 using log4net;
-using Microsoft.AspNetCore.SignalR;
 
 namespace KiDemo.Backend;
 
 internal class BackendService : IBackendService
 {
+	private const int DefaultClientId = 0;
+	private const string DefaultChatWorkflowName = "ChatProcess";
+
 	private static readonly ILog Log = LogManager.GetLogger(typeof(BackendService));
 
+	private readonly ISignalRClient _signalRClient;
+	private readonly IMessageBatch _messageBatch;
+	private readonly IStateAggregate _stateAggregate;
+	private readonly MultiDisposable _disposables = new();
 
+	private readonly object _lock = new();
 
+	public IObservable<BackendMessage> Message => _messageBatch.Message;
+	public IObservable<BackendState> State => _stateAggregate.State;
 
-	
-	private readonly Subject<string> _messages = new Subject<string>();
-
-	private int _count = 0;
-
-	public BackendService(ISignalRClient signalRClient, IConfigurationReader config)
+	public BackendService(ISignalRClient signalRClient, IMessageBatch messageBatch, IStateAggregate stateAggregate, IConfigurationReader config)
 	{
-		Log.Info("starting backend service");
+		_signalRClient = signalRClient;
+		_messageBatch = messageBatch;
+		_stateAggregate = stateAggregate;
 
-		var configSignalRUrl = config.SignalRUrl;
+		var signalRUrl = config.SignalRUrl;
 
-		Log.Info("Connecting signalr to: " + configSignalRUrl);
+		Log.Info($"starting backend service connection to: '{signalRUrl}'");
 
+		signalRClient.RootResults
+			.Subscribe(
+				OnRootMessage,
+				ex => LogError($"ERROR: {ex}", ex),
+				() => LogError("ERROR: COMPLETED"))
+			.AddTo(_disposables);
 
-		signalRClient.Run(configSignalRUrl);
+		signalRClient.QueryProcessed
+			.Subscribe(
+				OnQueryProcessed,
+				ex => LogError($"ERROR: {ex}", ex),
+				() => LogError("ERROR: COMPLETED"))
+			.AddTo(_disposables);
 
+		signalRClient.ServiceState
+			.Subscribe(
+				OnServiceState,
+				ex => LogError($"ERROR: {ex}", ex),
+				() => LogError("ERROR: COMPLETED"))
+			.AddTo(_disposables);
 
-		/*    if (_client == null || _client?.IsError == true)
-		       {
-		   		_client?.Dispose();
-		   		_client = null;
-		   
-		   		sb.AppendLine("Client NULL, creating client");
-		   
-		   		var client = new SignalRClient();
-		   
-		           client.RootResults.Subscribe(rr => sb.AppendLine($"{DateTimeOffset.Now:O} - RR: " + rr));
-		   		
-		   		// AZ
-		           // client.Run("http://10.0.0.4:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
-		   		
-		   		//local
-		           client.Run("http://localhost:5249", log => sb.AppendLine($"{DateTimeOffset.Now:O} - LOG: " + log));
-		   
-		   		_client = client;
-		       }*/
+		signalRClient.ClientState
+			.Subscribe(
+				OnClientState,
+				ex => LogError($"ERROR: {ex}", ex),
+				() => LogError("ERROR: COMPLETED"))
+			.AddTo(_disposables);
 
+		signalRClient.StatisticValues
+			.Subscribe(
+				OnStatisticValues,
+				ex => LogError($"ERROR: {ex}", ex),
+				() => LogError("ERROR: COMPLETED"))
+			.AddTo(_disposables);
+
+		signalRClient.Run(signalRUrl);
 	}
 
-	public int Count => _count;
+	public void SubmitMessage(string message)
+	{
+		lock (_lock)
+		{
+			//Todo ensure single processing
 
 
-	public IObservable<string> Messages => _messages;
+			var clientCommand = new ClientCommand
+			{
+				ExecuteType = ExecuteType.Chat,
+				ClientId = DefaultClientId,
+				Topic = DefaultChatWorkflowName,
+				Content = message
+			};
 
-    public void AddMessage(string message)
-    {
-	    _count++;
-	    _messages.OnNext(message);
+			_signalRClient.CommandClientMessage(clientCommand);
 
+
+			_messageBatch.ProcessSentMessage(message);
+		}
 	}
 
+	public void Release(int count)
+	{
+		lock (_lock)
+		{
+			_signalRClient.CommandRelease(count);
+		}
+	}
+
+	private void OnRootMessage(RootMessage message)
+	{
+		try
+		{
+			_messageBatch.ProcessRootMessage(message);
+		}
+		catch (Exception ex)
+		{
+			LogError($"ERROR: {ex.Message}", ex);
+		}
+	}
+
+	private void OnQueryProcessed(QueryProcessedMessage queryProcessedMessage)
+	{
+		try
+		{
+			_messageBatch.ProcessQueryMessage(queryProcessedMessage);
+		}
+		catch (Exception ex)
+		{
+			LogError($"ERROR: {ex.Message}", ex);
+		}
+	}
+
+	private void OnServiceState(ServiceStateMessage serviceState)
+	{
+		try
+		{
+			_stateAggregate.ProcessServiceState(serviceState);
+		}
+		catch (Exception ex)
+		{
+			LogError($"ERROR: {ex.Message}", ex);
+		}
+	}
+
+	private void OnClientState(bool clientState)
+	{
+		try
+		{
+			_stateAggregate.ProcessClientState(clientState);
+		}
+		catch (Exception ex)
+		{
+			LogError($"ERROR: {ex.Message}", ex);
+		}
+	}
+
+	private void OnStatisticValues(Statistics statistics)
+	{
+		try
+		{
+			_stateAggregate.ProcessStatistics(statistics);
+			_messageBatch.ProcessStatistics(statistics);
+		}
+		catch (Exception ex)
+		{
+			LogError($"ERROR: {ex.Message}", ex);
+		}
+	}
+
+	private static void LogError(string message, Exception? e = null)
+	{
+		Log.Error(message, e);
+	}
+
+	public void Dispose()
+	{
+		_disposables.Dispose();
+	}
 }

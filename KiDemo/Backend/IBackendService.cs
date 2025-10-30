@@ -1,8 +1,12 @@
-﻿namespace KiDemo.Backend;
+﻿using KiDemo.Backend.Dto;
 
-internal interface IBackendService
+namespace KiDemo.Backend;
+
+internal interface IBackendService: IDisposable
 {
-	IObservable<string> Messages { get; }
-	void AddMessage(string message);
-	int Count { get;}
+	IObservable<BackendMessage> Message { get; }
+	IObservable<BackendState> State { get; }
+
+	void SubmitMessage(string message);
+	void Release(int count); //todo: release manager
 }
