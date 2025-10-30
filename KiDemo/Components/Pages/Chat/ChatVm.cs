@@ -11,16 +11,10 @@ internal class ChatVm : IDisposable
 {
 	private static readonly ILog Log = LogManager.GetLogger(typeof(ChatVm));
 
-	private static readonly ServiceStateVm DefaultStateVm = new ServiceStateVm(
-		isConnected: false,
-		isProcessing: false,
-		isSubmitEnabled: false,
-		messageCount: 0);
-
 	private readonly IBackendService _backendService;
 
-	private readonly BehaviorSubject<MessageItemVm[]> _messageItems = new([]);
-	private readonly BehaviorSubject<ServiceStateVm> _serviceState = new(DefaultStateVm);
+	private readonly BehaviorSubject<(MessageItemVm[], int)> _messageItems = new(([], 0));
+	private readonly BehaviorSubject<ServiceStateVm> _serviceState = new(ServiceStateVm.Empty);
 
 	private readonly Subject<MessageDetailsVm> _messageDetails = new();
 
@@ -29,7 +23,7 @@ internal class ChatVm : IDisposable
 	private readonly MultiDisposable _disposables = new();
 	private readonly List<MessageItem> _messages = [];
 
-	public IObservable<MessageItemVm[]> MessageItems => _messageItems;
+	public IObservable<(MessageItemVm[], int)> MessageItems => _messageItems; 
 	public IObservable<MessageDetailsVm> MessageDetails => _messageDetails;
 	public IObservable<ServiceStateVm> ServiceState => _serviceState;
 	public IObservable<Unit> StateHasChanged => _stateHasChanged;
@@ -91,6 +85,7 @@ internal class ChatVm : IDisposable
 
 		var messageItem = new MessageItem(
 			id,
+			message.Number,
 			message.MessageType,
 			displayName,
 			message.MessageContent,
@@ -107,9 +102,11 @@ internal class ChatVm : IDisposable
 		}
 	}
 
+	//todo timestamp: local time display
+
 	private static string CreateMetadataString(BackendMessageStatistics messageStatistics) 
 		=> $"""
-		    timestamp:       {messageStatistics.Timestamp:O}
+		    timestamp:       {messageStatistics.Timestamp:O} 
 		    model:           {messageStatistics.ModelVersion}
 		    tokens in:       {messageStatistics.InTokens}
 		    tokens out:      {messageStatistics.ProcessTokens}
@@ -122,7 +119,7 @@ internal class ChatVm : IDisposable
 			.Select(m => new MessageItemVm(m.Id, m.MessageType, m.DisplayName))
 			.ToArray();
 
-		_messageItems.OnNext(messages);
+		_messageItems.OnNext((messages, _messages.LastOrDefault()?.Number ?? 0));
 	}
 
 	private void OnNewState(BackendState state)
@@ -130,8 +127,7 @@ internal class ChatVm : IDisposable
 		var stateVm = new ServiceStateVm(
 			isConnected: state.IsConnected,
 			isProcessing: state.IsProcessing,
-			isSubmitEnabled: state.IsConnected && !state.IsProcessing,
-			messageCount: state.MessageCount);
+			isSubmitEnabled: state.IsConnected && !state.IsProcessing);
 
 		_serviceState.OnNext(stateVm);
 

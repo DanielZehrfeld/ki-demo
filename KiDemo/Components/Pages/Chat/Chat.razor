@@ -56,8 +56,7 @@
 @inject ChatVm ViewModel
 
 @code {
-	private List<MessageItemVm> _messages = new List<MessageItemVm>();
-
+	private MessageItemVm[] _messages = [];
 
 	private string _messageTextToSubmit = string.Empty;
 	private string _selectedMessageContent = string.Empty;
@@ -78,9 +77,10 @@
 		ViewModel.StateHasChanged.Subscribe(_ => InvokeAsync(StateHasChanged));
 	}
 
-	private void OnMessagesChanged(MessageItemVm[] messages)
+	private void OnMessagesChanged((MessageItemVm[] messages, int messageCount) item)
 	{
-		_messages = messages.ToList();
+		_messages = item.messages;
+		_messageCount = item.messageCount;
 	}
 
 	private void OnMessageDetails(MessageDetailsVm messageDetails)
@@ -96,7 +96,6 @@
 
 		_isConnected = serviceState.IsConnected;
 		_isProcessing = serviceState.IsProcessing;
-		_messageCount = serviceState.MessageCount;
 	}
 
 	private static Color GetMessageColor(MessageItemVm message)

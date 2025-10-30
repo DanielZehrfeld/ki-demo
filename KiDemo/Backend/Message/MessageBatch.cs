@@ -8,19 +8,18 @@ namespace KiDemo.Backend.Message;
 internal class MessageBatch : IMessageBatch
 {
 	private readonly BehaviorSubject<ReplaySubject<BackendMessage>> _messages = new(new ReplaySubject<BackendMessage>());
-	private readonly BehaviorSubject<int> _messageCount = new(0);
 
 	public IObservable<BackendMessage> Message => _messages.Switch();
-	public IObservable<int> MessageCount => _messageCount;
 
 
-	//todo timestamp: local tíme display
+
+
+	private int _messageCount = 0;
 
 	public void ProcessSentMessage(string message)
 	{
 		_messages.OnNext(new ReplaySubject<BackendMessage>());
-
-		var number = _messageCount.Value + 1;
+		_messageCount = 0;
 
 		var statistics = new BackendMessageStatistics(
 			timestamp: DateTimeOffset.Now, 
@@ -30,7 +29,7 @@ internal class MessageBatch : IMessageBatch
 			modelVersion: string.Empty);
 
 		var backendMessage = new BackendMessage(
-			number: number, 
+			number: _messageCount++, 
 			messageType: MessageType.Request, 
 			messageContent: message, 
 			messageReply: string.Empty, 
@@ -44,8 +43,6 @@ internal class MessageBatch : IMessageBatch
 	public void ProcessQueryMessage(QueryProcessedMessage message)
 	{
 		//todo lock
-
-		var number = _messageCount.Value + 1;
 
 		var messageContent = message.QueryMessageText;
 		var messageReply = message.RawContent;
@@ -62,7 +59,7 @@ internal class MessageBatch : IMessageBatch
 			modelVersion: message.Statistics.ModelVersion);
 
 		var backendMessage = new BackendMessage(
-			number, 
+			_messageCount++, 
 			MessageType.Workflow, 
 			messageContent, 
 			messageReply, 
@@ -75,7 +72,6 @@ internal class MessageBatch : IMessageBatch
 
 	public void ProcessRootMessage(RootMessage message)
 	{
-		var number = _messageCount.Value + 1;
 
 		var messageReply = message.Content;
 
@@ -87,7 +83,7 @@ internal class MessageBatch : IMessageBatch
 			modelVersion: string.Empty);
 
 		var backendMessage = new BackendMessage(
-			number: number, 
+			number: _messageCount++, 
 			messageType: MessageType.Answer, 
 			messageContent: string.Empty, 
 			messageReply: messageReply, 

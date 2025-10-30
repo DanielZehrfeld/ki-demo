@@ -1,18 +1,16 @@
 ﻿namespace KiDemo.Backend.Dto;
 
-internal class BackendState(bool isConnected, bool isProcessing, int messageCount)
+internal class BackendState(bool isConnected, bool isProcessing)
 {
-	public static readonly BackendState Empty = new(false, false, 0);
+	public static readonly BackendState Empty = new(false, false);
 
 	public bool IsConnected { get; } = isConnected;
 	public bool IsProcessing { get; } = isProcessing;
-	public int MessageCount { get; } = messageCount;
 
 	protected bool Equals(BackendState other)
 	{
 		return IsConnected == other.IsConnected &&
-		       IsProcessing == other.IsProcessing &&
-		       MessageCount == other.MessageCount;
+		       IsProcessing == other.IsProcessing;
 	}
 
 	public override bool Equals(object? obj)
@@ -25,6 +23,6 @@ internal class BackendState(bool isConnected, bool isProcessing, int messageCoun
 
 	public override int GetHashCode()
 	{
-		return HashCode.Combine(IsConnected, IsProcessing, MessageCount);
+		return HashCode.Combine(IsConnected, IsProcessing);
 	}
 }

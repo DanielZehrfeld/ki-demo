@@ -2,7 +2,6 @@
 using System.Reactive.Subjects;
 using KiDemo.Backend.Dto;
 using KiDemo.Backend.Extensions;
-using KiDemo.Backend.Message;
 using KiDemo.SignalR.Messages;
 using log4net;
 
@@ -18,12 +17,6 @@ internal class StateAggregate : IStateAggregate
 	private bool _workerCount;
 	private bool _clientState;
 	private long _queueCount;
-	private int _messageCount;
-
-	public StateAggregate(IMessageBatch messageBatch)
-	{
-		messageBatch.MessageCount.Subscribe(OnMessageCount);
-	}
 
 	public IObservable<BackendState> State => _state.DistinctUntilChanged();
 
@@ -49,25 +42,16 @@ internal class StateAggregate : IStateAggregate
 		SubmitUpdateState();
 	}
 
-	private void OnMessageCount(int messageCount)
-	{
-		_messageCount = messageCount;
-
-		SubmitUpdateState();
-	}
-
 	private void SubmitUpdateState()
 	{
 		var isConnected = _clientState && _serviceStarted && _workerCount;
 		var isProcessing = _queueCount > 0;
-		var messageCount = _messageCount;
 
 		try
 		{
 			_state.OnNext(new BackendState(
 				isConnected: isConnected,
-				isProcessing: isProcessing,
-				messageCount: messageCount));
+				isProcessing: isProcessing));
 		}
 		catch (Exception ex)
 		{
