@@ -86,11 +86,16 @@ internal class ChatVm : IDisposable
 		var id = Guid.NewGuid();
 		
 		var displayName = $"{message.Number}: Workflow";
-		var messageContent = message.MessageContent;
-		var messageReply = message.MessageReply;
+
 		var messageMetadata = CreateMetadataString(message.Statistics);
 
-		var messageItem = new MessageItem(id, displayName, messageContent, messageReply, messageMetadata);
+		var messageItem = new MessageItem(
+			id,
+			message.MessageType,
+			displayName,
+			message.MessageContent,
+			message.MessageReply,
+			messageMetadata);
 
 		_messages.Add(messageItem);
 
@@ -114,7 +119,7 @@ internal class ChatVm : IDisposable
 	private void SubmitCurrentMessages()
 	{
 		var messages = _messages
-			.Select(m => new MessageItemVm(m.Id, m.DisplayName))
+			.Select(m => new MessageItemVm(m.Id, m.MessageType, m.DisplayName))
 			.ToArray();
 
 		_messageItems.OnNext(messages);

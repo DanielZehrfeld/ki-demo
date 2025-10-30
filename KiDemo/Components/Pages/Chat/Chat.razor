@@ -9,7 +9,12 @@
 	<div class="message-list">
 		@foreach (var message in _messages)
 		{
-			<button class="message-item" @onclick="() => SelectMessage(message.Id)">@message.DisplayName</button>
+			<button
+				class="message-item"
+				style="background-color: @GetMessageColor(message);"
+				@onclick="() => SelectMessage(message.Id)">
+				@message.DisplayName
+			</button>
 		}
 	</div>
 
@@ -92,6 +97,24 @@
 		_isConnected = serviceState.IsConnected;
 		_isProcessing = serviceState.IsProcessing;
 		_messageCount = serviceState.MessageCount;
+	}
+
+	private static Color GetMessageColor(MessageItemVm message)
+	{
+		switch (message.MessageType)
+		{
+			case MessageType.Request:
+				return Color.Yellow;
+
+			case MessageType.Answer:
+				return Color.Orange;
+
+			case MessageType.Workflow:
+				return Color.Gray;
+
+			default:
+				return Color.Black;
+		}
 	}
 
 	private void AddItem()
