@@ -15,7 +15,7 @@ internal class ChatVm: IDisposable
 
 	
 	private readonly BehaviorSubject<MessageItemVm[]> _messageItems = new([]);
-	private readonly BehaviorSubject<ServiceStateVm> _serviceState = new(new ServiceStateVm(false, 0));
+	private readonly BehaviorSubject<ServiceStateVm> _serviceState = new(new ServiceStateVm(false, 0, false));
 	private readonly Subject<MessageDetailsVm> _messageDetails = new();
 
 	private readonly Subject<Unit> _stateHasChanged = new();
@@ -108,8 +108,9 @@ internal class ChatVm: IDisposable
 	{
 		_serviceState.OnNext(
 			new ServiceStateVm(
-				state.IsSubmitEnabled,
-				state.TotalTokenCount));
+				isSubmitEnabled: state.IsSubmitEnabled,
+				totalTokenCount: state.TotalTokenCount,
+				isProcessing: state.IsProcessing));
 
 		TriggerStateChanged();
 	}

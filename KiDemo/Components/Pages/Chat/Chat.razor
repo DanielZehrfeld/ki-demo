@@ -55,7 +55,7 @@
 
 	private bool _isSubmitBtnDisabled = false;
 	private bool _isProcessing = false;
-	private int _totalTokenCount = 0;
+	private long _totalTokenCount = 0;
 
 
 	protected override void OnInitialized()
@@ -84,8 +84,7 @@
 	{
 		_isSubmitBtnDisabled = !serviceState.IsSubmitEnabled;
 		_totalTokenCount = serviceState.TotalTokenCount;
-
-		_isProcessing = serviceState.TotalTokenCount % 2 == 0;
+		_isProcessing = serviceState.IsProcessing;
 	}
 
 	private void AddItem()

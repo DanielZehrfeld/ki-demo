@@ -1,5 +1,6 @@
 ﻿using KiDemo.Backend.Dto;
 using KiDemo.Backend.Message;
+using KiDemo.Backend.Release;
 using KiDemo.Backend.State;
 using KiDemo.Backend.Utils;
 using KiDemo.Configuration;
@@ -26,7 +27,12 @@ internal class BackendService : IBackendService
 	public IObservable<BackendMessage> Message => _messageBatch.Message;
 	public IObservable<BackendState> State => _stateAggregate.State;
 
-	public BackendService(ISignalRClient signalRClient, IMessageBatch messageBatch, IStateAggregate stateAggregate, IConfigurationReader config)
+	public BackendService(
+		ISignalRClient signalRClient, 
+		IMessageBatch messageBatch, 
+		IStateAggregate stateAggregate, 
+		IReleaseManager releaseManager,
+		IConfigurationReader config)
 	{
 		_signalRClient = signalRClient;
 		_messageBatch = messageBatch;
@@ -72,10 +78,14 @@ internal class BackendService : IBackendService
 			.AddTo(_disposables);
 
 		signalRClient.Run(signalRUrl);
+
+		releaseManager.Start(Release);
 	}
 
 	public void SubmitMessage(string message)
 	{
+		//todo limit entry length, restrict non printable characters
+
 		lock (_lock)
 		{
 			//Todo ensure single processing
@@ -96,7 +106,7 @@ internal class BackendService : IBackendService
 		}
 	}
 
-	public void Release(int count)
+	private void Release(int count)
 	{
 		lock (_lock)
 		{

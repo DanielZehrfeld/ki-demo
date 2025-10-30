@@ -8,5 +8,4 @@ internal interface IBackendService: IDisposable
 	IObservable<BackendState> State { get; }
 
 	void SubmitMessage(string message);
-	void Release(int count); //todo: release manager
 }

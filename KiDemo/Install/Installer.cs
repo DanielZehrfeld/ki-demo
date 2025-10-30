@@ -1,5 +1,6 @@
 ﻿using KiDemo.Backend;
 using KiDemo.Backend.Message;
+using KiDemo.Backend.Release;
 using KiDemo.Backend.State;
 using KiDemo.Components.Pages.Chat;
 using KiDemo.Components.Pages.Log;
@@ -20,6 +21,9 @@ internal static class Installer
 		serviceCollection
 			.AddSingleton<IStateAggregate, StateAggregate>();
 
+		serviceCollection
+			.AddSingleton<IReleaseManager, ReleaseManager>();
+		
 		serviceCollection
 			.AddScoped<ChatVm>();
 
