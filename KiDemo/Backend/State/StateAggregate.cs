@@ -2,24 +2,28 @@
 using System.Reactive.Subjects;
 using KiDemo.Backend.Dto;
 using KiDemo.Backend.Extensions;
+using KiDemo.Backend.Message;
 using KiDemo.SignalR.Messages;
+using log4net;
 
 namespace KiDemo.Backend.State;
 
 internal class StateAggregate : IStateAggregate
 {
-	private static readonly BackendState InitialState = new(
-		totalTokenCount: 0, 
-		isSubmitEnabled: false, 
-		isProcessing: false);
+	private static readonly ILog Log = LogManager.GetLogger(typeof(StateAggregate));
 
-	private readonly BehaviorSubject<BackendState> _state = new(InitialState);
+	private readonly BehaviorSubject<BackendState> _state = new(BackendState.Empty);
 
 	private bool _serviceStarted;
 	private bool _workerCount;
 	private bool _clientState;
-	private long _tokens;
+	private long _queueCount;
+	private int _messageCount;
 
+	public StateAggregate(IMessageBatch messageBatch)
+	{
+		messageBatch.MessageCount.Subscribe(OnMessageCount);
+	}
 
 	public IObservable<BackendState> State => _state.DistinctUntilChanged();
 
@@ -40,21 +44,34 @@ internal class StateAggregate : IStateAggregate
 
 	public void ProcessStatistics(Statistics statistics)
 	{
-		_tokens = statistics.GetTotalTokens() ?? 0;
+		_queueCount = statistics.GetQueueCount() ?? 0;
+
+		SubmitUpdateState();
+	}
+
+	private void OnMessageCount(int messageCount)
+	{
+		_messageCount = messageCount;
 
 		SubmitUpdateState();
 	}
 
 	private void SubmitUpdateState()
 	{
-		long totalTokenCount = 0;
-		bool isSubmitEnabled = false;
-		bool isProcessing = false;
+		var isConnected = _clientState && _serviceStarted && _workerCount;
+		var isProcessing = _queueCount > 0;
+		var messageCount = _messageCount;
 
-		_state.OnNext(new BackendState(
-			totalTokenCount: totalTokenCount, 
-			isSubmitEnabled: isSubmitEnabled, 
-			isProcessing: isProcessing));
+		try
+		{
+			_state.OnNext(new BackendState(
+				isConnected: isConnected,
+				isProcessing: isProcessing,
+				messageCount: messageCount));
+		}
+		catch (Exception ex)
+		{
+			Log.Error("Exception submitting state", ex);
+		}
 	}
 }
-

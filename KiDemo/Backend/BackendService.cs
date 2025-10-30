@@ -90,7 +90,6 @@ internal class BackendService : IBackendService
 		{
 			//Todo ensure single processing
 
-
 			var clientCommand = new ClientCommand
 			{
 				ExecuteType = ExecuteType.Chat,
@@ -100,7 +99,6 @@ internal class BackendService : IBackendService
 			};
 
 			_signalRClient.CommandClientMessage(clientCommand);
-
 
 			_messageBatch.ProcessSentMessage(message);
 		}

@@ -42,6 +42,10 @@
     flex-shrink: 0; /* Fixed height for input area */
 }
 
+    .input-area input {
+        width: 700px; /* Set the desired width */
+    }
+
 .content-area {
     display: flex;
     gap: 10px;

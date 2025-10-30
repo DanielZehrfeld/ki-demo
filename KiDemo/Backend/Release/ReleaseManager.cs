@@ -4,7 +4,6 @@ internal class ReleaseManager : IReleaseManager
 {
 	public void Start(Action<int> releaseItems)
 	{
-		//todo
+		//todo release manager
 	}
-
 }

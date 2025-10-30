@@ -7,15 +7,21 @@ using log4net;
 
 namespace KiDemo.Components.Pages.Chat;
 
-internal class ChatVm: IDisposable
+internal class ChatVm : IDisposable
 {
 	private static readonly ILog Log = LogManager.GetLogger(typeof(ChatVm));
 
+	private static readonly ServiceStateVm DefaultStateVm = new ServiceStateVm(
+		isConnected: false,
+		isProcessing: false,
+		isSubmitEnabled: false,
+		messageCount: 0);
+
 	private readonly IBackendService _backendService;
 
-	
 	private readonly BehaviorSubject<MessageItemVm[]> _messageItems = new([]);
-	private readonly BehaviorSubject<ServiceStateVm> _serviceState = new(new ServiceStateVm(false, 0, false));
+	private readonly BehaviorSubject<ServiceStateVm> _serviceState = new(DefaultStateVm);
+
 	private readonly Subject<MessageDetailsVm> _messageDetails = new();
 
 	private readonly Subject<Unit> _stateHasChanged = new();
@@ -25,7 +31,7 @@ internal class ChatVm: IDisposable
 
 	public IObservable<MessageItemVm[]> MessageItems => _messageItems;
 	public IObservable<MessageDetailsVm> MessageDetails => _messageDetails;
-	public IObservable<ServiceStateVm> ServiceState=> _serviceState;
+	public IObservable<ServiceStateVm> ServiceState => _serviceState;
 	public IObservable<Unit> StateHasChanged => _stateHasChanged;
 
 	private bool _isInit;
@@ -62,20 +68,14 @@ internal class ChatVm: IDisposable
 	public void SelectMessage(Guid messageId)
 	{
 		var selectedMessage = _messages
-				.FirstOrDefault(message => message.Id == messageId);
+			.FirstOrDefault(message => message.Id == messageId);
 
 		if (selectedMessage != null)
 		{
-			//todo
-			string messageContent = "";
-			string messageReply = "";
-			string messageMetadata = "";
-
 			_messageDetails.OnNext(new MessageDetailsVm(
-				id: messageId,
-				messageContent: messageContent,
-				messageReply: messageReply,
-				messageMetadata: messageMetadata));
+				messageContent: selectedMessage.MessageContent,
+				messageReply: selectedMessage.MessageReply,
+				messageMetadata: selectedMessage.MessageMetadata));
 
 			TriggerStateChanged();
 		}
@@ -83,9 +83,16 @@ internal class ChatVm: IDisposable
 
 	private void OnNewMessage(BackendMessage message)
 	{
-		var displayName = ""; //todo
+		var id = Guid.NewGuid();
+		
+		var displayName = $"{message.Number}: Workflow";
+		var messageContent = message.MessageContent;
+		var messageReply = message.MessageReply;
+		var messageMetadata = CreateMetadataString(message.Statistics);
 
-		_messages.Add(new MessageItem(Guid.NewGuid(), displayName));
+		var messageItem = new MessageItem(id, displayName, messageContent, messageReply, messageMetadata);
+
+		_messages.Add(messageItem);
 
 		if (!_isInit)
 		{
@@ -94,6 +101,15 @@ internal class ChatVm: IDisposable
 			TriggerStateChanged();
 		}
 	}
+
+	private static string CreateMetadataString(BackendMessageStatistics messageStatistics) 
+		=> $"""
+		    timestamp:       {messageStatistics.Timestamp:O}
+		    model:           {messageStatistics.ModelVersion}
+		    tokens in:       {messageStatistics.InTokens}
+		    tokens out:      {messageStatistics.ProcessTokens}
+		    processing time: {messageStatistics.ProcessingTimeMs / 1000:F2} sec.
+		    """;
 
 	private void SubmitCurrentMessages()
 	{
@@ -106,17 +122,19 @@ internal class ChatVm: IDisposable
 
 	private void OnNewState(BackendState state)
 	{
-		_serviceState.OnNext(
-			new ServiceStateVm(
-				isSubmitEnabled: state.IsSubmitEnabled,
-				totalTokenCount: state.TotalTokenCount,
-				isProcessing: state.IsProcessing));
+		var stateVm = new ServiceStateVm(
+			isConnected: state.IsConnected,
+			isProcessing: state.IsProcessing,
+			isSubmitEnabled: state.IsConnected && !state.IsProcessing,
+			messageCount: state.MessageCount);
+
+		_serviceState.OnNext(stateVm);
 
 		TriggerStateChanged();
 	}
 
 	private void TriggerStateChanged() => _stateHasChanged.OnNext(Unit.Default);
-	
+
 	public void Dispose()
 	{
 		_disposables.Dispose();

@@ -27,9 +27,8 @@ internal static class StatisticsExt
 
 	public const string BreakTime = "f) Break until: ";
 
-
-	public static long? GetTotalTokens(this Statistics statistics) 
-		=> statistics.Values.Get(UsagePromptTokensTotalKey);
+	public static long? GetQueueCount(this Statistics statistics) 
+		=> statistics.Values.Get(QueueSizeTotalKey);
 
 	private static long? Get(this StatisticValue[] statisticsValues, string key) 
 		=> statisticsValues.FirstOrDefault(s => s.Key == key)?.Value;

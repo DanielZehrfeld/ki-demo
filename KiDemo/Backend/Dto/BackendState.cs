@@ -1,17 +1,18 @@
 ﻿namespace KiDemo.Backend.Dto;
 
-internal class BackendState(long totalTokenCount, bool isSubmitEnabled, bool isProcessing)
+internal class BackendState(bool isConnected, bool isProcessing, int messageCount)
 {
-	public long TotalTokenCount { get; } = totalTokenCount;
-	public bool IsSubmitEnabled { get; } = isSubmitEnabled;
-	public bool IsProcessing { get; } = isProcessing;
+	public static readonly BackendState Empty = new(false, false, 0);
 
+	public bool IsConnected { get; } = isConnected;
+	public bool IsProcessing { get; } = isProcessing;
+	public int MessageCount { get; } = messageCount;
 
 	protected bool Equals(BackendState other)
 	{
-		return TotalTokenCount == other.TotalTokenCount &&
-		       IsSubmitEnabled == other.IsSubmitEnabled &&
-		       IsProcessing == other.IsProcessing;
+		return IsConnected == other.IsConnected &&
+		       IsProcessing == other.IsProcessing &&
+		       MessageCount == other.MessageCount;
 	}
 
 	public override bool Equals(object? obj)
@@ -24,6 +25,6 @@ internal class BackendState(long totalTokenCount, bool isSubmitEnabled, bool isP
 
 	public override int GetHashCode()
 	{
-		return HashCode.Combine(TotalTokenCount, IsSubmitEnabled, IsProcessing);
+		return HashCode.Combine(IsConnected, IsProcessing, MessageCount);
 	}
 }
