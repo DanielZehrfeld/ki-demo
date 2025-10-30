@@ -1,3 +1,4 @@
+using KiChat.Client.SignalR;
 using KiDemo.Backend;
 using KiDemo.Components;
 using KiDemo.Components.Pages.Chat;
@@ -15,10 +16,12 @@ builder.Services
 builder.Services
 	.AddScoped<ChatVm>();
 
+builder.Services
+	.AddTransient<ISignalRClient, SignalRClient>();
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);

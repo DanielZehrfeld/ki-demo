@@ -51,9 +51,20 @@
     overflow: auto;
 }
 
+    .content-area > div {
+        display: flex;
+        flex-direction: column; /* Stack headline and textarea vertically */
+        gap: 5px; /* Add spacing between headline and textarea */
+
+        flex: 1; /* Default text area takes up remaining space */
+    }
+
     .content-area textarea {
         flex: 1; /* Default text area takes up remaining space */
         resize: none; /* Disable manual resizing */
+
+        width: 100%; /* Ensure full width */
+        height: 100px; /* Set a fixed height for consistency */
     }
 
     .content-area .metadata-area {
@@ -63,6 +74,11 @@
         resize: none; /* Disable manual resizing */
 
         background-color: lightblue;
+    }
+
+    .content-area h3 {
+        margin: 0 0 5px 0; /* Add spacing below the headline */
+        font-size: 1.2em; /* Adjust font size */
     }
 
 .status-info {

@@ -58,7 +58,10 @@ public class ChatVm(IBackendService backendService)
 
 	public void SelectMessage(Guid messageId)
 	{
-		_messageDetails.OnNext(new MessageDetailsVm(messageId, $"CONTENT of {messageId}", $"metadata of {messageId}"));
+		_messageDetails.OnNext(new MessageDetailsVm(messageId, 
+			$"CONTENT of {messageId}",
+			$"REPLY of {messageId}",
+			$"metadata of {messageId}"));
 
 		TriggerStateChanged();
 	}

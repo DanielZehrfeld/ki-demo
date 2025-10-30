@@ -14,7 +14,6 @@
 	</div>
 
 	<div class="main-area">
-		
 
 		<div class="input-area">
 			<input type="text" @bind="_messageTextToSubmit" placeholder="Enter text..."/>
@@ -28,9 +27,18 @@
 		</div>
 
 		<div class="content-area">
-			<textarea readonly>@_selectedMessageContent</textarea>
+			<div>
+				<h3>Input</h3>
+				<textarea readonly>@_selectedMessageContent</textarea>
+			</div>
+			<div>
+				<h3>Output</h3>
+				<textarea readonly>@_selectedMessageReply</textarea>
+			</div>
 			<textarea class="metadata-area" readonly>@_selectedMessageMetadata</textarea>
 		</div>
+		
+
 	</div>
 </div>
 
@@ -42,6 +50,7 @@
 
 	private string _messageTextToSubmit = string.Empty;
 	private string _selectedMessageContent = string.Empty;
+	private string _selectedMessageReply = string.Empty;
 	private string _selectedMessageMetadata = string.Empty;
 
 	private bool _isSubmitBtnDisabled = false;
@@ -67,6 +76,7 @@
 	private void OnMessageDetails(MessageDetailsVm messageDetails)
 	{
 		_selectedMessageContent = messageDetails.MessageContent;
+		_selectedMessageReply = messageDetails.MessageReply;
 		_selectedMessageMetadata = messageDetails.MessageMetadata;
 	}
 

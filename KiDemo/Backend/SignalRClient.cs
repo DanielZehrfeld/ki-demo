@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace KiChat.Client.SignalR;
 
-internal class SignalRClient: IDisposable 
+internal class SignalRClient: IDisposable, ISignalRClient
 {
     private const string Failed = "FAILED";
 

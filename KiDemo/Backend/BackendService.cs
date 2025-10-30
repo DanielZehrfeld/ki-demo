@@ -3,20 +3,11 @@ using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using Microsoft.AspNetCore.SignalR;
 
 namespace KiDemo.Backend;
 
-
-public interface IBackendService
-{
-    IObservable<string> Messages { get; }
-    void AddMessage(string message);
-	int Count { get;}
-}
-
-
-
-public class BackendService: IBackendService
+internal class BackendService(ISignalRClient signalRClient): IBackendService
 {
 	
 	private readonly Subject<string> _messages = new Subject<string>();
