@@ -10,6 +10,5 @@ internal interface IMessageBatch
 
 	void ProcessRootMessage(RootMessage message);
 	void ProcessQueryMessage(QueryProcessedMessage message);
-	void ProcessStatistics(Statistics statistics);
 	void ProcessSentMessage(string message);
 }

@@ -98,7 +98,11 @@ internal class BackendService : IBackendService
 				Content = message
 			};
 
+			// todo verbindungsfehler abfangen / behandeln
+
 			_signalRClient.CommandClientMessage(clientCommand);
+
+			//todo ensure message correctly submitted
 
 			_messageBatch.ProcessSentMessage(message);
 		}
@@ -108,6 +112,9 @@ internal class BackendService : IBackendService
 	{
 		lock (_lock)
 		{
+			// todo verbindungsfehler abfangen / behandeln
+
+
 			_signalRClient.CommandRelease(count);
 		}
 	}
@@ -165,7 +172,6 @@ internal class BackendService : IBackendService
 		try
 		{
 			_stateAggregate.ProcessStatistics(statistics);
-			_messageBatch.ProcessStatistics(statistics);
 		}
 		catch (Exception ex)
 		{
