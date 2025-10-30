@@ -1,4 +1,5 @@
 using KiDemo.Components;
+using KiDemo.Configuration;
 using KiDemo.Install;
 using log4net;
 using KiDemo.Log;
@@ -22,6 +23,7 @@ internal class Program
 			var serviceCollection = builder.Services;
 
 			serviceCollection.AddSingleton<ILogContentProvider>(new LogContentProvider(getLogContent));
+			serviceCollection.AddSingleton<IConfigurationReader>(new ConfigurationReader(builder.Configuration));
 
 			serviceCollection
 				.AddRazorComponents()
