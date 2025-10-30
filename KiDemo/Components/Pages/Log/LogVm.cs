@@ -2,11 +2,7 @@
 
 namespace KiDemo.Components.Pages.Log;
 
-public class LogVm(ILogContentProvider logProvider) //todo make all classes internal
+internal class LogVm(ILogContentProvider logProvider)
 {
-	public string GetLog()
-	{
-
-		return logProvider.GetLogContent();
-	}
+	public string GetLog() => logProvider.GetLogContent();
 }

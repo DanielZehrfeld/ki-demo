@@ -1,6 +1,6 @@
 ﻿namespace KiDemo.Log;
 
-public interface ILogContentProvider
+internal interface ILogContentProvider
 {
 	string GetLogContent();
 }

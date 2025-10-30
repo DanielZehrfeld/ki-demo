@@ -2,9 +2,16 @@
 
 <PageTitle>Log</PageTitle>
 
-<h1>LOG</h1>
-
-<textarea>@_logContent</textarea>
+<div class="chat-container">
+	<div class="main-area">
+		<div class="content-area">
+			<div>
+				<h3>Log</h3>
+				<textarea readonly>@_logContent</textarea>
+			</div>
+		</div>
+	</div>
+</div>
 
 @inject LogVm ViewModel
 
@@ -15,4 +22,5 @@
 	{
 		_logContent = ViewModel.GetLog();
 	}
+
 }

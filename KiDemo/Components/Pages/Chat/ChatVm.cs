@@ -1,11 +1,10 @@
 ﻿using System.Reactive;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using KiDemo.Backend;
 
 namespace KiDemo.Components.Pages.Chat;
 
-public class ChatVm(IBackendService backendService)
+internal class ChatVm(IBackendService backendService)
 {
 	private readonly Subject<MessageItemVm[]> _messageItems = new Subject<MessageItemVm[]>();
 	private readonly Subject<MessageDetailsVm> _messageDetails = new Subject<MessageDetailsVm>();

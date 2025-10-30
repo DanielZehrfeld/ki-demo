@@ -5,7 +5,7 @@ using KiDemo.SignalR;
 
 namespace KiDemo.Install;
 
-public static class Installer
+internal static class Installer
 {
 	public static void InstallServices(IServiceCollection serviceCollection)
 	{

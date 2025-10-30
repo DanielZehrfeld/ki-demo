@@ -1,8 +1,6 @@
 using KiDemo.Components;
 using KiDemo.Install;
 using log4net;
-using log4net.Config;
-using log4net.Layout;
 using KiDemo.Log;
 
 namespace KiDemo;
@@ -15,9 +13,9 @@ internal class Program
 	{
 		try
 		{
-			var getLogContent = ConfigureLog4Net();
+			var getLogContent = Log4NetStringBuilderAppender.Configure();
 
-			Log.Info("Application starting...");
+			Log.Info("Application starting");
 
 			var builder = WebApplication.CreateBuilder(args);
 
@@ -48,31 +46,16 @@ internal class Program
 			app.MapRazorComponents<App>()
 				.AddInteractiveServerRenderMode();
 
+			Log.Info("Application starting DONE. Running");
+
 			app.Run();
+
+			Log.Info("Application running DONE.");
 		}
 		catch (Exception ex)
 		{
 			Log.Error("Exception starting service", ex);
 			throw;
 		}
-	}
-
-	private static Func<string> ConfigureLog4Net()
-	{
-		var layout = new PatternLayout
-		{
-			ConversionPattern = "%date [%thread] %-5level %logger - %message%newline"
-		};
-		layout.ActivateOptions();
-
-		var stringBuilderAppender = new StringBuilderAppender()
-		{
-			Layout = layout
-		};
-		stringBuilderAppender.ActivateOptions();
-
-		BasicConfigurator.Configure(stringBuilderAppender);
-
-		return stringBuilderAppender.GetLog;
 	}
 }
