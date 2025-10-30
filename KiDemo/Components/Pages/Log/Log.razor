@@ -1,0 +1,18 @@
+﻿@page "/log"
+
+<PageTitle>Log</PageTitle>
+
+<h1>LOG</h1>
+
+<textarea>@_logContent</textarea>
+
+@inject LogVm ViewModel
+
+@code {
+	private string _logContent = string.Empty;
+
+	protected override void OnInitialized()
+	{
+		_logContent = ViewModel.GetLog();
+	}
+}

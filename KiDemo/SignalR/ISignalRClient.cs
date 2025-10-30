@@ -1,0 +1,17 @@
+﻿using KiDemo.SignalR.Messages;
+
+namespace KiDemo.SignalR;
+
+internal interface ISignalRClient
+{
+	IObservable<RootMessage> RootResults { get; }
+	IObservable<QueryProcessedMessage> QueryProcessed { get; }
+	IObservable<ServiceStateMessage> ServiceState { get; }
+	IObservable<bool> ClientState { get; }
+	IObservable<Statistics> StatisticValues { get; }
+
+	string CommandClientMessage(ClientCommand message);
+	void CommandRelease(int count);
+
+	IDisposable Run(string url);
+}

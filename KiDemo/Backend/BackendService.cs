@@ -1,8 +1,8 @@
-﻿using KiChat.Client.SignalR;
-using System;
+﻿using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using KiDemo.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace KiDemo.Backend;
