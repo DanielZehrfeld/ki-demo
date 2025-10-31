@@ -46,8 +46,9 @@
         width: 700px; /* Set the desired width */
     }
 
-.content-area {
+.mycontainer {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
     position: relative;
@@ -55,35 +56,48 @@
     overflow: auto;
 }
 
-    .content-area > div {
-        display: flex;
-        flex-direction: column; /* Stack headline and textarea vertically */
-        gap: 5px; /* Add spacing between headline and textarea */
+.mycontent {
+    flex: 1;
+    display: flex;
+}
 
-        flex: 1; /* Default text area takes up remaining space */
-    }
+.mycolumn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+}
 
-    .content-area textarea {
-        flex: 1; /* Default text area takes up remaining space */
-        resize: none; /* Disable manual resizing */
+.myfixed-width {
+    flex:none;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 200px;
+}
 
-        width: 100%; /* Ensure full width */
-        height: 100px; /* Set a fixed height for consistency */
-    }
+.mycolumn-header {
+    height: 50px;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+}
 
-    .content-area .metadata-area {
-        flex: 0; /* Prevent it from expanding */
-        width: 200px; /* Fixed width for metadata text area */
-        height: 100%; /* Full height */
-        resize: none; /* Disable manual resizing */
+/*
 
-        background-color: lightblue;
-    }
 
-    .content-area h3 {
-        margin: 0 0 5px 0; /* Add spacing below the headline */
-        font-size: 1.2em; /* Adjust font size */
-    }
+textarea {
+    flex: 1; 
+    width: 100%;
+    resize: none;
+    box-sizing: border-box;
+}
+*/
 
 .status-info {
     position: absolute; /* Aligns relative to the nearest positioned parent */

@@ -41,17 +41,25 @@
 
 		</div>
 
-		<div class="content-area">
-			<div>
-				<h3>Input</h3>
-				<textarea readonly>@_selectedMessageContent</textarea>
-			</div>
-			<div>
-				<h3>Output</h3>
-				<textarea readonly>@_selectedMessageReply</textarea>
-			</div>
+		<div class="mycontainer">
+			<div class="mycontent">
 
-    		<textarea class="metadata-area" readonly>@_selectedMessageMetadata</textarea>
+				<div class="mycolumn">
+					<div class="mycolumn-header">Nachricht</div>
+					<textarea readonly>@_selectedMessageContent</textarea>
+				</div>
+				
+				<div class="mycolumn">
+					<div class="mycolumn-header">Ausgabe</div>
+					<textarea readonly>@_selectedMessageReply</textarea>
+				</div>
+
+				<div class="myfixed-width">
+					<div class="mycolumn-header"></div>
+					<textarea readonly>@_selectedMessageMetadata</textarea>
+				</div>
+
+			</div>
 		</div>
 
 	</div>
