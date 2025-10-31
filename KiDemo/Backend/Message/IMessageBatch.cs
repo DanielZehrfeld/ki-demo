@@ -10,5 +10,4 @@ internal interface IMessageBatch
 	void ProcessUserMessage(UserMessage message);
 	void ProcessQueryMessage(QueryProcessedMessage message);
 	void ProcessSentMessage(string message);
-	void ProcessClientConnected();
 }
