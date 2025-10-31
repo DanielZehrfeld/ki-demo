@@ -10,8 +10,7 @@
 		@foreach (var message in _messages)
 		{
 			<button
-				class="message-item"
-				style="background-color: @GetMessageColor(message);"
+				class="message-item @(GetMessageCssClass(message))"
 				@onclick="() => SelectMessage(message.Id)">
 				@message.DisplayName
 			</button>
@@ -162,5 +161,16 @@
 	private void SelectMessage(Guid messageId)
 	{
 		ViewModel.SelectMessage(messageId);
+	}
+
+	private static string GetMessageCssClass(MessageItemVm message)
+	{
+		return message.MessageType switch
+		{
+			MessageType.Request => "message-item-request",
+			MessageType.Answer => "message-item-answer",
+			MessageType.Workflow => "message-item-workflow",
+			_ => "message-item-default"
+		};
 	}
 }

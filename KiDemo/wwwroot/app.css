@@ -1,12 +1,22 @@
 :root {
-    --default-text-color: #F30;
-    --text-area-text-color: #50F;
+    --default-text-color: #333333;
+    --text-area-text-color: #333333;
     --text-area-font: 'Courier New', Courier, monospace;
+    --message-item-request-color: #D1FAE5;
+    --message-item-answer-color: #FDE68A;
+    --message-item-workflow-color: #BFDBFE;
+    --message-item-default-color: #000000;
+    --metadata-area-background-color: #E5E7EB; /* Metadaten-Panel Hintergrund */
+    --text-area-background-color: #FF9999;
+    --message-list-background-color: #E5E7EB;
+    --default-website-background-color__ORIGINAL: #F9FAFB;
+    --default-website-background-color: #99FF00;
 }
 
 html, body {
     font-family: 'Times New Roman', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: var(--default-text-color);
+    background-color: var(--default-website-background-color);
 }
 
 a, .btn-link {
@@ -16,8 +26,11 @@ a, .btn-link {
 textarea {
     width: 100%;
     height: 100%;
+    border: 1px solid #E5E7EB;
+    border-radius: 5px;
     resize: none; /* Disable manual resizing */
     color: var(--text-area-text-color);
+    background-color: var(--text-area-background-color);
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.7em; /* Set font size to 0.7 times the parent element's font size */
 }

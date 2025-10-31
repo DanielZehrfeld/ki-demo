@@ -6,7 +6,7 @@
 }
 
 .message-list {
-    background-color: gray;
+    background-color: var(--message-list-background-color);
     padding: 20px;
     overflow-y: scroll;
     width: 200px;
@@ -24,6 +24,23 @@
     color: var(--default-text-color);
     margin-bottom: 5px;
     text-align: left;
+    border-radius: 5px;
+}
+
+.message-item-request {
+    background-color: var(--message-item-request-color);
+}
+
+.message-item-answer {
+    background-color: var(--message-item-answer-color);
+}
+
+.message-item-workflow {
+    background-color: var(--message-item-workflow-color);
+}
+
+.message-item-default {
+    background-color: var(--message-item-default-color);
 }
 
 .main-area {
@@ -87,15 +104,14 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 10px;
     box-sizing: border-box;
+    margin-right: 10px;
 }
 
 .myfixed-width {
     flex:none;
     display: flex;
     flex-direction: column;
-    padding: 10px;
     box-sizing: border-box;
     width: 200px;
 }
@@ -113,7 +129,7 @@
 
 .special-textarea {
     font-size: 1.2em; /* Larger font size */
-    background-color: #d3d3d3; /* Gray background */
+    background-color: var(--metadata-area-background-color); /* Gray background */
     color: var(--text-area-text-color); /* Optional: Set text color to black for better contrast */
     border: 1px solid #ccc; /* Optional: Add a border */
     padding: 10px; /* Optional: Add padding for better readability */
