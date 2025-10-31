@@ -102,19 +102,6 @@
     font-weight: bold;
 }
 
-/*
-
-
-textarea {
-    flex: 1; 
-    width: 100%;
-    resize: none;
-    box-sizing: border-box;
-}
-*/
-
-
-
 .processing-lamp {
     width: 15px;
     height: 15px;
@@ -126,4 +113,17 @@ textarea {
     width: 100%;
     height: 100%;
     resize: none; /* Disable manual resizing */
+
+    color: #55F; /* Replace #000 with your desired text color */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7em; /* Set font size to 0.7 times the parent element's font size */
+}
+
+.special-textarea {
+    font-size: 1.2em; /* Larger font size */
+    background-color: #d3d3d3; /* Gray background */
+    color: #000; /* Optional: Set text color to black for better contrast */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    padding: 10px; /* Optional: Add padding for better readability */
+    resize: none; /* Optional: Disable resizing */
 }
