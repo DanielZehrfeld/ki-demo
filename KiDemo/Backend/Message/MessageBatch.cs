@@ -15,7 +15,16 @@ internal class MessageBatch : IMessageBatch
 	private int _messageCount;
 
 	public IObservable<BackendMessage> Message => _messages.Switch().Synchronize();
-	
+
+	public void ProcessClientConnected()
+	{
+		lock (_lock)
+		{
+			_messages.OnNext(new ReplaySubject<BackendMessage>());
+			_messageCount = 0;
+		}
+	}
+
 	public void ProcessSentMessage(string message)
 	{
 		lock (_lock)

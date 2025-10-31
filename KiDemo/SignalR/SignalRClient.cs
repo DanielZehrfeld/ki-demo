@@ -160,7 +160,7 @@ internal class SignalRClient : ISignalRClient
 	{
 		try
 		{
-			Log.Debug($"user message received: topic: {userMessage.Topic}, content: {userMessage.Content}");
+			Log.Debug($"user message received: topic: {userMessage.Topic}");
 			_userMessage.OnNext(userMessage);
 		}
 		catch (Exception ex)
@@ -186,7 +186,7 @@ internal class SignalRClient : ISignalRClient
 	{
 		try
 		{
-			Log.Debug($"statistics received: {statistics}");
+			Log.Debug($"statistics received");
 			_statistics.OnNext(statistics);
 		}
 		catch (Exception ex)

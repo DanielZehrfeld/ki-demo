@@ -242,6 +242,13 @@ internal class BackendService : IBackendService
 	{
 		try
 		{
+			Log.Info($"Received client state: {clientState}");
+
+			if (clientState)
+			{
+				_messageBatch.ProcessClientConnected();
+			}
+
 			_stateAggregate.ProcessClientState(clientState);
 		}
 		catch (Exception ex)

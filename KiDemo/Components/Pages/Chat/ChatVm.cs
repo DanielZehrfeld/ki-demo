@@ -81,6 +81,7 @@ internal class ChatVm : IDisposable
 		var id = Guid.NewGuid();
 
 		var messageName = string.Empty;
+		var messageMetadata = string.Empty;
 
 		switch (message.MessageType)
 		{
@@ -92,12 +93,11 @@ internal class ChatVm : IDisposable
 				break;
 			case MessageType.Workflow:
 				messageName = "Workflow";
+				messageMetadata = CreateMetadataString(message.Statistics);
 				break;
 		}
 
 		var displayName = $"{message.Number}: {messageName}";
-
-		var messageMetadata = CreateMetadataString(message.Statistics);
 
 		var messageItem = new MessageItem(
 			id,
