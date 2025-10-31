@@ -43,7 +43,21 @@
 }
 
     .input-area input {
-        width: 700px; /* Set the desired width */
+        width: 100%; /* Set the desired width */
+    }
+
+    .status-info {
+        /* position: static;  Entferne absolute Positionierung */
+        flex: none; /* Verhindere, dass sie sich ausdehnen */
+        position: relative;  
+   
+        align-items: center;
+        gap: 10px; /* Adds spacing between items */
+        background-color: #ffffff; /* Optional: Add a background color for better visibility */
+        padding: 5px 10px; /* Optional: Add padding for better spacing */
+        border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+        border-radius: 5px; /* Optional: Add rounded corners */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
     }
 
 .mycontainer {
@@ -99,20 +113,7 @@ textarea {
 }
 */
 
-.status-info {
-    position: absolute; /* Aligns relative to the nearest positioned parent */
-    right: 0px; /* Locks it to the right side of the parent container */
-    top: 50%; /* Vertically aligns it with the middle of the parent container */
-    transform: translateY(-50%); /* Adjusts for proper vertical centering */
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Adds spacing between items */
-    background-color: #ffffff; /* Optional: Add a background color for better visibility */
-    padding: 5px 10px; /* Optional: Add padding for better spacing */
-    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
-    border-radius: 5px; /* Optional: Add rounded corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
-}
+
 
 .processing-lamp {
     width: 15px;
