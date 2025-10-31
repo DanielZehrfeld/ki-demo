@@ -100,7 +100,12 @@ internal class BackendService : IBackendService
 
 			// todo verbindungsfehler abfangen / behandeln
 
-			_signalRClient.CommandClientMessage(clientCommand);
+			var result = _signalRClient.CommandClientMessage(clientCommand);
+
+			if (!string.IsNullOrEmpty(result))
+			{
+				throw new Exception($"Received error message from server, processing command: '{result}'");
+			}
 
 			//todo ensure message correctly submitted
 
@@ -115,7 +120,12 @@ internal class BackendService : IBackendService
 			// todo verbindungsfehler abfangen / behandeln
 
 
-			_signalRClient.CommandRelease(count);
+			var result = _signalRClient.CommandRelease(count);
+
+			if (!string.IsNullOrEmpty(result))
+			{
+				throw new Exception($"Received error message from server, processing command: '{result}'");
+			}
 		}
 	}
 

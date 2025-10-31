@@ -8,6 +8,8 @@ namespace KiDemo.SignalR;
 
 internal class SignalRClient : ISignalRClient
 {
+	private const string Failed = "FAILED";
+
 	private static readonly ILog Log = LogManager.GetLogger(typeof(SignalRClient));
 	private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(2);
 
@@ -114,6 +116,33 @@ internal class SignalRClient : ISignalRClient
 			}
 		);
 
+	public string CommandRelease(int count)
+	{
+		try
+		{
+			Log.Debug($"Sending CommandRelease: {count}");
+			return _connection?.InvokeAsync<string>(SignalRConstants.CommandRelease, count).Result ?? Failed;
+		}
+		catch (Exception ex)
+		{
+			Log.Error("Exception sending CommandRelease", ex);
+			throw;
+		}
+	}
+
+	public string CommandClientMessage(ClientCommand message)
+	{
+		try
+		{
+			Log.Debug($"Sending CommandClientMessage: {message}");
+			return _connection?.InvokeAsync<string>(SignalRConstants.CommandClientMessage, message).Result ?? Failed;
+		}
+		catch (Exception ex)
+		{
+			Log.Error("Exception sending CommandClientMessage", ex);
+			throw;
+		}
+	}
 	private void OnQueryProcessed(QueryProcessedMessage message)
 	{
 		try
@@ -163,34 +192,6 @@ internal class SignalRClient : ISignalRClient
 		catch (Exception ex)
 		{
 			Log.Error("Exception executing OnStatisticValues", ex);
-		}
-	}
-
-	public void CommandRelease(int count)
-	{
-		try
-		{
-			Log.Debug($"Sending CommandRelease: {count}");
-			_connection?.SendAsync(SignalRConstants.CommandRelease, count).Wait();
-		}
-		catch (Exception ex)
-		{
-			Log.Error("Exception sending CommandRelease", ex);
-			throw;
-		}
-	}
-
-	public string CommandClientMessage(ClientCommand message)
-	{
-		try
-		{
-			Log.Debug($"Sending CommandClientMessage: {message}");
-			return _connection?.InvokeAsync<string>(SignalRConstants.CommandClientMessage, message).Result ?? string.Empty;
-		}
-		catch (Exception ex)
-		{
-			Log.Error("Exception sending CommandClientMessage", ex);
-			throw;
 		}
 	}
 }

@@ -11,7 +11,7 @@ internal interface ISignalRClient
 	IObservable<Statistics> StatisticValues { get; }
 
 	string CommandClientMessage(ClientCommand message);
-	void CommandRelease(int count);
+	string CommandRelease(int count);
 
 	IDisposable Run(string url);
 }
