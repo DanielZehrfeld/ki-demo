@@ -1,26 +1,27 @@
 :root {
     --default-text-color: #333333;
     --text-area-text-color: #333333;
-    --text-area-font: 'Courier New', Courier, monospace;
     --message-item-request-color: #D1FAE5;
     --message-item-answer-color: #FDE68A;
     --message-item-workflow-color: #BFDBFE;
     --message-item-default-color: #000000;
     --metadata-area-background-color: #E5E7EB; /* Metadaten-Panel Hintergrund */
-    --text-area-background-color: #FF9999;
+    --text-area-background-color: #FFFFFF;
     --message-list-background-color: #E5E7EB;
-    --default-website-background-color__ORIGINAL: #F9FAFB;
-    --default-website-background-color: #99FF00;
+    --default-website-background-color: #f8f8f8;
+    --status-info-background-color: #FFFFFF;
+    --page-top-line-color: #E5E7EB;
+    --link-text-color: #007AA3;
 }
 
 html, body {
-    font-family: 'Times New Roman', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: var(--default-text-color);
     background-color: var(--default-website-background-color);
 }
 
 a, .btn-link {
-    color: #006bb7;
+    color: var(--link-text-color);
 }
 
 textarea {
@@ -32,12 +33,12 @@ textarea {
     color: var(--text-area-text-color);
     background-color: var(--text-area-background-color);
     font-family: 'Courier New', Courier, monospace;
-    font-size: 0.7em; /* Set font size to 0.7 times the parent element's font size */
+    font-size: 0.7em;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
+    background-color: var(--link-text-color);
     border-color: #1861ac;
 }
 
@@ -103,6 +104,5 @@ main {
     flex: 1; /* Take up remaining space */
     overflow: auto; /* Enable scrolling if content overflows */
 
-    background-color: bisque;
     height: 100%;
 }

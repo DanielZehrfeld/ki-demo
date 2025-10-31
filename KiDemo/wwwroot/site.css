@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: row;
     height: 100%;
-    background-color: aqua
 }
 
 .message-list {
@@ -49,7 +48,6 @@
     flex-direction: column;
     height: 100%;
     margin-left: 10px;
-    background-color:blueviolet;
 }
 
 .input-area {
@@ -64,17 +62,16 @@
         width: 100%; /* Set the desired width */
     }
 
-    .status-info {
-        /* position: static;  Entferne absolute Positionierung */
-        flex: none; /* Verhindere, dass sie sich ausdehnen */
-        position: relative;  
-   
-        background-color: #ffffff; /* Optional: Add a background color for better visibility */
-        padding: 5px 10px; /* Optional: Add padding for better spacing */
-        border: 1px solid #ddd; /* Optional: Add a border for better visibility */
-        border-radius: 5px; /* Optional: Add rounded corners */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
-    }
+.status-info {
+    /* position: static;  Entferne absolute Positionierung */
+    flex: none; /* Verhindere, dass sie sich ausdehnen */
+    position: relative;
+    background-color: var(--status-info-background-color); 
+    padding: 5px 10px; /* Optional: Add padding for better spacing */
+    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
 
 
 .processing-lamp {
@@ -118,7 +115,6 @@
 
 .mycolumn-header {
     height: 50px;
-    background-color: #e0e0e0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -126,10 +122,8 @@
     font-weight: bold;
 }
 
-
 .special-textarea {
-    font-size: 1.2em; /* Larger font size */
-    background-color: var(--metadata-area-background-color); /* Gray background */
+    background-color: var(--metadata-area-background-color);
     color: var(--text-area-text-color); /* Optional: Set text color to black for better contrast */
     border: 1px solid #ccc; /* Optional: Add a border */
     padding: 10px; /* Optional: Add padding for better readability */

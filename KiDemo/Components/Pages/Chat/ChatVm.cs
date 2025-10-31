@@ -7,6 +7,20 @@ using log4net;
 
 namespace KiDemo.Components.Pages.Chat;
 
+// todo: Overlay
+// todo impressum
+// todo links überprüfen, link in DZI-Webpage
+// todo: Beschriftung "demo"
+// todo: workflow nachricht nach antwort nachricht
+// todo: App start: vorhandene antworten mal da und mal nicht, weg. async Client connect nachricht (z.T. vor client connect)
+// todo: sprache beschriftungen engl deutsch
+// todo lampen-farben
+// todo Überschrift 'nachricht, Ausgabe' - Text; Font / Size unschön,
+// todo Font / size navigation pane übernehmen
+// todo info-Seite
+// todo selected button / item color (message-list)
+// todo: ?!? v.o.n.u: 20: Workflow; 22: Ausgabe; 21: Workflow - what???
+
 internal class ChatVm : IDisposable
 {
 	private static readonly ILog Log = LogManager.GetLogger(typeof(ChatVm));
@@ -140,10 +154,14 @@ internal class ChatVm : IDisposable
 
 	private void OnNewState(BackendState state)
 	{
+		var stateIsConnected = state.IsConnected;
+		var stateHasQueueItems = state.HasQueueItems;
+		var isSubmitEnabled = state is {IsConnected: true, HasQueueItems: false, ReleaseCount: > 0};
+
 		var stateVm = new ServiceStateVm(
-			isConnected: state.IsConnected,
-			isProcessing: state.HasQueueItems,
-			isSubmitEnabled: state.IsConnected && !state.HasQueueItems);
+			isConnected: stateIsConnected,
+			isProcessing: stateHasQueueItems,
+			isSubmitEnabled: isSubmitEnabled);
 
 		_serviceState.OnNext(stateVm);
 
