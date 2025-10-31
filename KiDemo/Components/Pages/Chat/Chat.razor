@@ -31,10 +31,10 @@
 
 			<div class="status-info">
 				<span>Connected</span>
-				<span class="processing-lamp" style="background-color: @(_isConnected ? "green" : "red");"></span>
+				<span class="processing-lamp" style="background-color: @(_isConnected ? "green" : "orange");"></span>
 
 				<span>Processing</span>
-				<span class="processing-lamp" style="background-color: @(_isProcessing ? "red" : "green");"></span>
+				<span class="processing-lamp" style="background-color: @(_isProcessing ? "orange" : "green");"></span>
 
 				<span>Messages: @_messageCount</span>
 			</div>
@@ -120,7 +120,7 @@
 				return Color.Orange;
 
 			case MessageType.Workflow:
-				return Color.Gray;
+				return Color.Aqua;
 
 			default:
 				return Color.Black;

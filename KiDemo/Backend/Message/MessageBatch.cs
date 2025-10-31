@@ -31,7 +31,7 @@ internal class MessageBatch : IMessageBatch
 				modelVersion: string.Empty);
 
 			var backendMessage = new BackendMessage(
-				number: _messageCount++,
+				number: ++_messageCount,
 				messageType: MessageType.Request,
 				messageContent: message,
 				messageReply: string.Empty,
@@ -53,7 +53,7 @@ internal class MessageBatch : IMessageBatch
 				message.Statistics.ModelVersion);
 
 			var backendMessage = new BackendMessage(
-				_messageCount++,
+				++_messageCount,
 				MessageType.Workflow,
 				message.QueryMessageText,
 				message.RawContent,
@@ -63,7 +63,7 @@ internal class MessageBatch : IMessageBatch
 		}
 	}
 
-	public void ProcessRootMessage(RootMessage message)
+	public void ProcessUserMessage(UserMessage message)
 	{
 		lock (_lock)
 		{
@@ -75,7 +75,7 @@ internal class MessageBatch : IMessageBatch
 				modelVersion: string.Empty);
 
 			var backendMessage = new BackendMessage(
-				number: _messageCount++,
+				number: ++_messageCount,
 				messageType: MessageType.Answer,
 				messageContent: string.Empty,
 				messageReply: message.Content,

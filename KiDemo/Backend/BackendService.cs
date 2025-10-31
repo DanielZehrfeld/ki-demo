@@ -50,17 +50,17 @@ internal class BackendService : IBackendService
 				ex => LogError($"ERROR: {ex}", ex),
 				() => LogError("ERROR: COMPLETED"))
 			.AddTo(_disposables);
-		
-		signalRClient.RootResults
-			.Subscribe(
-				OnRootMessage,
-				ex => LogError($"ERROR: {ex}", ex),
-				() => LogError("ERROR: COMPLETED"))
-			.AddTo(_disposables);
 
 		signalRClient.QueryProcessed
 			.Subscribe(
 				OnQueryProcessed,
+				ex => LogError($"ERROR: {ex}", ex),
+				() => LogError("ERROR: COMPLETED"))
+			.AddTo(_disposables);
+
+		signalRClient.UserMessage
+			.Subscribe(
+				OnUserMessage,
 				ex => LogError($"ERROR: {ex}", ex),
 				() => LogError("ERROR: COMPLETED"))
 			.AddTo(_disposables);
@@ -99,19 +99,22 @@ internal class BackendService : IBackendService
 	{
 		Log.Info($"request to submit message '{message}'");
 
-		message = message.Substring(0, MaxMessageSize);
-
 		lock (_lock)
 		{
 			var messageSubmitted = false;
 			try
 			{
+				if (message.Length > MaxMessageSize)
+				{
+					throw new Exception($"Message length needs to be lower than '{MaxMessageSize}'");
+				}
+
 				if (_hasQueueItems)
 				{
 					throw new Exception("queue not empty");
 				}
 
-				if (_isConnected)
+				if (!_isConnected)
 				{
 					throw new Exception("not connected to service");
 				}
@@ -143,7 +146,7 @@ internal class BackendService : IBackendService
 			}
 			catch (Exception ex)
 			{
-				Log.Warn("Submit message failed: ", ex);
+				Log.Warn("Submit message failed", ex);
 			}
 
 			if (messageSubmitted)
@@ -199,11 +202,11 @@ internal class BackendService : IBackendService
 		}
 	}
 
-	private void OnRootMessage(RootMessage message)
+	private void OnUserMessage(UserMessage message)
 	{
 		try
 		{
-			_messageBatch.ProcessRootMessage(message);
+			_messageBatch.ProcessUserMessage(message);
 		}
 		catch (Exception ex)
 		{

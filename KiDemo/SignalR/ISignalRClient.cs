@@ -4,7 +4,7 @@ namespace KiDemo.SignalR;
 
 internal interface ISignalRClient
 {
-	IObservable<RootMessage> RootResults { get; }
+	IObservable<UserMessage> UserMessage { get; }
 	IObservable<QueryProcessedMessage> QueryProcessed { get; }
 	IObservable<ServiceStateMessage> ServiceState { get; }
 	IObservable<bool> ClientState { get; }

@@ -7,7 +7,7 @@ internal interface IMessageBatch
 {
 	IObservable<BackendMessage> Message { get; }
 
-	void ProcessRootMessage(RootMessage message);
+	void ProcessUserMessage(UserMessage message);
 	void ProcessQueryMessage(QueryProcessedMessage message);
 	void ProcessSentMessage(string message);
 }

@@ -16,12 +16,12 @@ internal class SignalRClient : ISignalRClient
 	private readonly System.Reactive.Subjects.BehaviorSubject<bool> _clientState = new(false);
 	private readonly System.Reactive.Subjects.BehaviorSubject<Statistics> _statistics = new(new Statistics());
 
-	private readonly System.Reactive.Subjects.Subject<RootMessage> _rootResults = new();
+	private readonly System.Reactive.Subjects.Subject<UserMessage> _userMessage = new();
 	private readonly System.Reactive.Subjects.Subject<QueryProcessedMessage> _queriesProcessed = new();
 	private readonly System.Reactive.Subjects.Subject<ServiceStateMessage> _serviceState = new();
 
 	public IObservable<QueryProcessedMessage> QueryProcessed => _queriesProcessed.Synchronize();
-	public IObservable<RootMessage> RootResults => _rootResults.Synchronize();
+	public IObservable<UserMessage> UserMessage => _userMessage.Synchronize();
 	public IObservable<ServiceStateMessage> ServiceState => _serviceState.Synchronize();
 	public IObservable<bool> ClientState => _clientState.Synchronize();
 	public IObservable<Statistics> StatisticValues => _statistics.Synchronize();
@@ -68,7 +68,7 @@ internal class SignalRClient : ISignalRClient
 			.Build();
 
 		connection.On<QueryProcessedMessage>(SignalRConstants.OnQueryProcessed, OnQueryProcessed);
-		connection.On<RootMessage>(SignalRConstants.OnRootResults, OnRootResult);
+		connection.On<UserMessage>(SignalRConstants.OnUserMessage, OnUserMessage);
 		connection.On<ServiceStateMessage>(SignalRConstants.OnServiceState, OnServiceState);
 		connection.On<Statistics>(SignalRConstants.OnStatisticValues, OnStatisticValues);
 
@@ -156,16 +156,16 @@ internal class SignalRClient : ISignalRClient
 		}
 	}
 
-	private void OnRootResult(RootMessage message)
+	private void OnUserMessage(UserMessage userMessage)
 	{
 		try
 		{
-			Log.Debug($"root result: {message}");
-			_rootResults.OnNext(message);
+			Log.Debug($"user message received: topic: {userMessage.Topic}, content: {userMessage.Content}");
+			_userMessage.OnNext(userMessage);
 		}
 		catch (Exception ex)
 		{
-			Log.Error("Exception executing OnRootResult", ex);
+			Log.Error("Exception executing OnUserMessage", ex);
 		}
 	}
 

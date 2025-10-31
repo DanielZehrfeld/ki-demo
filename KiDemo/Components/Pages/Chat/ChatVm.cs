@@ -79,8 +79,23 @@ internal class ChatVm : IDisposable
 	private void OnNewMessage(BackendMessage message)
 	{
 		var id = Guid.NewGuid();
-		
-		var displayName = $"{message.Number}: Workflow";
+
+		var messageName = string.Empty;
+
+		switch (message.MessageType)
+		{
+			case MessageType.Request:
+				messageName = "Nachricht";
+				break;
+			case MessageType.Answer:
+				messageName = "Ausgabe";
+				break;
+			case MessageType.Workflow:
+				messageName = "Workflow";
+				break;
+		}
+
+		var displayName = $"{message.Number}: {messageName}";
 
 		var messageMetadata = CreateMetadataString(message.Statistics);
 
@@ -106,10 +121,12 @@ internal class ChatVm : IDisposable
 
 	private static string CreateMetadataString(BackendMessageStatistics messageStatistics) 
 		=> $"""
-		    model:           {messageStatistics.ModelVersion}
-		    tokens in:       {messageStatistics.InTokens}
-		    tokens out:      {messageStatistics.ProcessTokens}
-		    processing time: {messageStatistics.ProcessingTimeMs / 1000:F2} sec.
+		    model:           
+		    {messageStatistics.ModelVersion}
+		    
+		    tokens in:  {messageStatistics.InTokens}
+		    tokens out: {messageStatistics.ProcessTokens}
+		    duration:   {messageStatistics.ProcessingTimeMs / 1000:F2} sec.
 		    """;
 
 	private void SubmitCurrentMessages()

@@ -16,6 +16,11 @@ internal class Log4NetStringBuilderAppender : AppenderSkeleton
 		var writer = new StringWriter(_logContent);
 		Layout?.Format(writer, loggingEvent);
 		writer.Flush();
+
+		if (loggingEvent.ExceptionObject != null)
+		{
+			_logContent.AppendLine($"{loggingEvent.ExceptionObject!}");
+		}
 	}
 
 	public static Func<string> Configure()
