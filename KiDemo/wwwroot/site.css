@@ -21,6 +21,7 @@
 .message-item {
     display: block;
     width: 100%;
+    color: var(--default-text-color);
     margin-bottom: 5px;
     text-align: left;
 }
@@ -51,14 +52,21 @@
         flex: none; /* Verhindere, dass sie sich ausdehnen */
         position: relative;  
    
-        align-items: center;
-        gap: 10px; /* Adds spacing between items */
         background-color: #ffffff; /* Optional: Add a background color for better visibility */
         padding: 5px 10px; /* Optional: Add padding for better spacing */
         border: 1px solid #ddd; /* Optional: Add a border for better visibility */
         border-radius: 5px; /* Optional: Add rounded corners */
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
     }
+
+
+.processing-lamp {
+    margin-left:5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%; /* Makes it a circle */
+    display: inline-block;
+}
 
 .mycontainer {
     display: flex;
@@ -102,27 +110,11 @@
     font-weight: bold;
 }
 
-.processing-lamp {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%; /* Makes it a circle */
-    display: inline-block;
-}
-
-textarea {
-    width: 100%;
-    height: 100%;
-    resize: none; /* Disable manual resizing */
-
-    color: #55F; /* Replace #000 with your desired text color */
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.7em; /* Set font size to 0.7 times the parent element's font size */
-}
 
 .special-textarea {
     font-size: 1.2em; /* Larger font size */
     background-color: #d3d3d3; /* Gray background */
-    color: #000; /* Optional: Set text color to black for better contrast */
+    color: var(--text-area-text-color); /* Optional: Set text color to black for better contrast */
     border: 1px solid #ccc; /* Optional: Add a border */
     padding: 10px; /* Optional: Add padding for better readability */
     resize: none; /* Optional: Disable resizing */

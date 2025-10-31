@@ -1,10 +1,25 @@
+:root {
+    --default-text-color: #F30;
+    --text-area-text-color: #50F;
+    --text-area-font: 'Courier New', Courier, monospace;
+}
+
 html, body {
     font-family: 'Times New Roman', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #A33;
+    color: var(--default-text-color);
 }
 
 a, .btn-link {
     color: #006bb7;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    resize: none; /* Disable manual resizing */
+    color: var(--text-area-text-color);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7em; /* Set font size to 0.7 times the parent element's font size */
 }
 
 .btn-primary {
