@@ -2,5 +2,5 @@
 
 internal interface IReleaseManager
 {
-	void Start(Action<int> releaseItems);
+	void Start(Func<int, bool> releaseItems);
 }

@@ -2,7 +2,7 @@
 
 internal class ReleaseManager : IReleaseManager
 {
-	public void Start(Action<int> releaseItems)
+	public void Start(Func<int, bool> releaseItems)
 	{
 		//todo release manager
 	}

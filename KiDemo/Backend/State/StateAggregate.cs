@@ -18,7 +18,9 @@ internal class StateAggregate : IStateAggregate
 	private bool _clientState;
 	private long _queueCount;
 
-	public IObservable<BackendState> State => _state.DistinctUntilChanged();
+	public IObservable<BackendState> State => _state
+		.Synchronize()
+		.DistinctUntilChanged();
 
 	public void ProcessServiceState(ServiceStateMessage state)
 	{
@@ -45,13 +47,22 @@ internal class StateAggregate : IStateAggregate
 	private void SubmitUpdateState()
 	{
 		var isConnected = _clientState && _serviceStarted && _workerCount;
-		var isProcessing = _queueCount > 0;
+		var hasQueueItems = _queueCount > 0;
 
 		try
 		{
-			_state.OnNext(new BackendState(
+			var updateState = new BackendState(
 				isConnected: isConnected,
-				isProcessing: isProcessing));
+				hasQueueItems: hasQueueItems);
+
+			Task.Run(() => _state.OnNext(updateState))
+				.ContinueWith(e =>
+				{
+					if (e.IsFaulted)
+					{
+						Log.Error("Exception task submitting state", e.Exception);
+					}
+				});
 		}
 		catch (Exception ex)
 		{

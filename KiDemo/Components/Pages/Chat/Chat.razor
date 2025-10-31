@@ -21,7 +21,11 @@
 	<div class="main-area">
 
 		<div class="input-area">
-			<input type="text" @bind="_messageTextToSubmit" placeholder="Enter text..."/>
+			<input
+				type="text"
+				@bind="_messageTextToSubmit"
+				placeholder="KI Anfrage (max. 1000 Zeichen)"
+				maxlength="1000"/>
 
 			<button class="btn btn-primary" @onclick="AddItem" disabled="@_isSubmitBtnDisabled">Submit</button>
 
@@ -53,6 +57,7 @@
 	</div>
 </div>
 
+@inject IJSRuntime JsRuntime
 @inject ChatVm ViewModel
 
 @code {
@@ -83,11 +88,18 @@
 		_messageCount = item.messageCount;
 	}
 
-	private void OnMessageDetails(MessageDetailsVm messageDetails)
+	private async void OnMessageDetails(MessageDetailsVm messageDetails)
 	{
 		_selectedMessageContent = messageDetails.MessageContent;
 		_selectedMessageReply = messageDetails.MessageReply;
-		_selectedMessageMetadata = messageDetails.MessageMetadata;
+	
+		var localTimestampString =  await JsRuntime.InvokeAsync<string>("convertUtcToLocal", messageDetails.UtcTimestampString);
+
+		_selectedMessageMetadata = $"""
+		                            {localTimestampString}
+		                            
+		                            {messageDetails.MessageMetadata}
+		                            """;
 	}
 
 	private void OnServiceState(ServiceStateVm serviceState)

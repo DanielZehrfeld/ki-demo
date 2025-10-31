@@ -14,6 +14,7 @@ internal class BackendService : IBackendService
 {
 	private const int DefaultClientId = 0;
 	private const string DefaultChatWorkflowName = "ChatProcess";
+	public const int MaxMessageSize = 1000;
 
 	private static readonly ILog Log = LogManager.GetLogger(typeof(BackendService));
 
@@ -21,6 +22,10 @@ internal class BackendService : IBackendService
 	private readonly IMessageBatch _messageBatch;
 	private readonly IStateAggregate _stateAggregate;
 	private readonly MultiDisposable _disposables = new();
+
+	private bool _hasQueueItems;
+	private bool _isConnected;
+	private bool _pendingQueueItems;
 
 	private readonly object _lock = new();
 
@@ -34,14 +39,18 @@ internal class BackendService : IBackendService
 		IReleaseManager releaseManager,
 		IConfigurationReader config)
 	{
+		Log.Info("starting backend service");
+
 		_signalRClient = signalRClient;
 		_messageBatch = messageBatch;
 		_stateAggregate = stateAggregate;
 
-		var signalRUrl = config.SignalRUrl;
-
-		Log.Info($"starting backend service connection to: '{signalRUrl}'");
-
+		_stateAggregate.State.Subscribe(
+				OnStateChanged,
+				ex => LogError($"ERROR: {ex}", ex),
+				() => LogError("ERROR: COMPLETED"))
+			.AddTo(_disposables);
+		
 		signalRClient.RootResults
 			.Subscribe(
 				OnRootMessage,
@@ -77,6 +86,10 @@ internal class BackendService : IBackendService
 				() => LogError("ERROR: COMPLETED"))
 			.AddTo(_disposables);
 
+		var signalRUrl = config.SignalRUrl;
+
+		Log.Info($"Connecting to: '{signalRUrl}'");
+
 		signalRClient.Run(signalRUrl);
 
 		releaseManager.Start(Release);
@@ -84,47 +97,100 @@ internal class BackendService : IBackendService
 
 	public void SubmitMessage(string message)
 	{
-		//todo limit entry length, restrict non printable characters
+		message = message.Substring(0, MaxMessageSize);
 
 		lock (_lock)
 		{
-			//Todo ensure single processing
-
-			var clientCommand = new ClientCommand
+			var messageSubmitted = false;
+			try
 			{
-				ExecuteType = ExecuteType.Chat,
-				ClientId = DefaultClientId,
-				Topic = DefaultChatWorkflowName,
-				Content = message
-			};
+				if (_hasQueueItems)
+				{
+					throw new Exception("queue not empty");
+				}
 
-			// todo verbindungsfehler abfangen / behandeln
+				if (_isConnected)
+				{
+					throw new Exception("not connected to service");
+				}
 
-			var result = _signalRClient.CommandClientMessage(clientCommand);
+				if (_pendingQueueItems)
+				{
+					throw new Exception("waiting for submitted items");
+				}
 
-			if (!string.IsNullOrEmpty(result))
+				var clientCommand = new ClientCommand
+				{
+					ExecuteType = ExecuteType.Chat,
+					ClientId = DefaultClientId,
+					Topic = DefaultChatWorkflowName,
+					Content = message
+				};
+
+				var result = _signalRClient.CommandClientMessage(clientCommand);
+
+				if (!string.IsNullOrEmpty(result))
+				{
+					throw new Exception($"Received error message from server, processing command: '{result}'");
+				}
+
+				Log.Info("Message successfully submit");
+
+				_pendingQueueItems = true;
+				messageSubmitted = true;
+			}
+			catch (Exception ex)
 			{
-				throw new Exception($"Received error message from server, processing command: '{result}'");
+				Log.Warn("Submit message failed: ", ex);
 			}
 
-			//todo ensure message correctly submitted
-
-			_messageBatch.ProcessSentMessage(message);
+			if (messageSubmitted)
+			{
+				_messageBatch.ProcessSentMessage(message);
+			}
 		}
 	}
 
-	private void Release(int count)
+	private bool Release(int count)
 	{
 		lock (_lock)
 		{
-			// todo verbindungsfehler abfangen / behandeln
-
-
-			var result = _signalRClient.CommandRelease(count);
-
-			if (!string.IsNullOrEmpty(result))
+			try
 			{
-				throw new Exception($"Received error message from server, processing command: '{result}'");
+				var result = _signalRClient.CommandRelease(count);
+
+				if (!string.IsNullOrEmpty(result))
+				{
+					throw new Exception($"Received error message from server, processing command: '{result}'");
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Warn("Release failed: ", ex);
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private void OnStateChanged(BackendState state)
+	{
+		lock (_lock)
+		{
+			try
+			{
+				_isConnected = state.IsConnected;
+				_hasQueueItems = state.HasQueueItems;
+
+				if (_hasQueueItems)
+				{
+					_pendingQueueItems = false;
+				}
+			}
+			catch (Exception ex)
+			{
+				LogError($"ERROR: {ex.Message}", ex);
 			}
 		}
 	}

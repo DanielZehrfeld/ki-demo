@@ -69,7 +69,8 @@ internal class ChatVm : IDisposable
 			_messageDetails.OnNext(new MessageDetailsVm(
 				messageContent: selectedMessage.MessageContent,
 				messageReply: selectedMessage.MessageReply,
-				messageMetadata: selectedMessage.MessageMetadata));
+				messageMetadata: selectedMessage.MessageMetadata,
+				utcTimestampString: selectedMessage.Timestamp.ToUniversalTime().ToString("O")));
 
 			TriggerStateChanged();
 		}
@@ -87,6 +88,7 @@ internal class ChatVm : IDisposable
 			id,
 			message.Number,
 			message.MessageType,
+			message.Statistics.Timestamp,
 			displayName,
 			message.MessageContent,
 			message.MessageReply,
@@ -102,11 +104,8 @@ internal class ChatVm : IDisposable
 		}
 	}
 
-	//todo timestamp: local time display
-
 	private static string CreateMetadataString(BackendMessageStatistics messageStatistics) 
 		=> $"""
-		    timestamp:       {messageStatistics.Timestamp:O} 
 		    model:           {messageStatistics.ModelVersion}
 		    tokens in:       {messageStatistics.InTokens}
 		    tokens out:      {messageStatistics.ProcessTokens}
@@ -126,8 +125,8 @@ internal class ChatVm : IDisposable
 	{
 		var stateVm = new ServiceStateVm(
 			isConnected: state.IsConnected,
-			isProcessing: state.IsProcessing,
-			isSubmitEnabled: state.IsConnected && !state.IsProcessing);
+			isProcessing: state.HasQueueItems,
+			isSubmitEnabled: state.IsConnected && !state.HasQueueItems);
 
 		_serviceState.OnNext(stateVm);
 
