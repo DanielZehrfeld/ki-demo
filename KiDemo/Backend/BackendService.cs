@@ -97,6 +97,8 @@ internal class BackendService : IBackendService
 
 	public void SubmitMessage(string message)
 	{
+		Log.Info($"request to submit message '{message}'");
+
 		message = message.Substring(0, MaxMessageSize);
 
 		lock (_lock)
@@ -157,6 +159,8 @@ internal class BackendService : IBackendService
 		{
 			try
 			{
+				Log.Info($"Releasing '{count}'");
+
 				var result = _signalRClient.CommandRelease(count);
 
 				if (!string.IsNullOrEmpty(result))

@@ -92,14 +92,13 @@
 	{
 		_selectedMessageContent = messageDetails.MessageContent;
 		_selectedMessageReply = messageDetails.MessageReply;
-	
-		var localTimestampString =  await JsRuntime.InvokeAsync<string>("convertUtcToLocal", messageDetails.UtcTimestampString);
 
-		_selectedMessageMetadata = $"""
-		                            {localTimestampString}
-		                            
-		                            {messageDetails.MessageMetadata}
-		                            """;
+		var localTimestampString = await JsRuntime.InvokeAsync<string>("convertUtcToLocal", messageDetails.UtcTimestampString);
+
+		_selectedMessageMetadata = $"{localTimestampString}" +
+		                           $"{Environment.NewLine}" +
+		                           $"{Environment.NewLine}" +
+		                           $"{messageDetails.MessageMetadata}";
 	}
 
 	private void OnServiceState(ServiceStateVm serviceState)

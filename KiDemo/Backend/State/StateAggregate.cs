@@ -17,10 +17,13 @@ internal class StateAggregate : IStateAggregate
 	private bool _workerCount;
 	private bool _clientState;
 	private long _queueCount;
+	private long _releaseCount;
 
 	public IObservable<BackendState> State => _state
 		.Synchronize()
 		.DistinctUntilChanged();
+
+	public BackendState Current => _state.Value; 
 
 	public void ProcessServiceState(ServiceStateMessage state)
 	{
@@ -40,6 +43,7 @@ internal class StateAggregate : IStateAggregate
 	public void ProcessStatistics(Statistics statistics)
 	{
 		_queueCount = statistics.GetQueueCount() ?? 0;
+		_releaseCount = statistics.GetReleaseCount() ?? 0;
 
 		SubmitUpdateState();
 	}
@@ -53,7 +57,8 @@ internal class StateAggregate : IStateAggregate
 		{
 			var updateState = new BackendState(
 				isConnected: isConnected,
-				hasQueueItems: hasQueueItems);
+				hasQueueItems: hasQueueItems,
+				releaseCount: _releaseCount);
 
 			Task.Run(() => _state.OnNext(updateState))
 				.ContinueWith(e =>
